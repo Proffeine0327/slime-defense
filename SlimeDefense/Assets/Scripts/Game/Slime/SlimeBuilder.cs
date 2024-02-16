@@ -5,12 +5,18 @@ public partial class Slime
         //services
         private ResourceLoader resourceLoader => ServiceProvider.Get<ResourceLoader>();
 
-        private Slime slime;
+        private string key;
         private int lv;
 
         public Builder()
         {
             
+        }
+
+        public Builder Key(string key)
+        {
+            this.key = key;
+            return this;
         }
 
         public Builder Lv(int lv)
@@ -21,6 +27,8 @@ public partial class Slime
 
         public Slime Build()
         {
+            var slime = Instantiate(resourceLoader.slimeModels[key]);
+            slime.lv = lv;
             return slime;
         }
     }

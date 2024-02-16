@@ -27,7 +27,7 @@ public partial class Slime
                 animator.Play(name);
                 yield return null;
                 var clip = animator.GetCurrentAnimatorClipInfo(0)[0];
-                var ratio = clip.clip.length / slime.stat.attackDelay;
+                var ratio = clip.clip.length / slime.stat.GetStat("attack delay");
                 animator.SetFloat("atkspeed", ratio);
             }
         }

@@ -14,11 +14,7 @@ public class ServiceProvider : MonoBehaviour
         {
             _instance = new GameObject("[ServiceProvider]").AddComponent<ServiceProvider>();
             DontDestroyOnLoad(_instance.gameObject);
-            SceneManager.sceneUnloaded += _ =>
-            {
-                _instance.sceneContext.Clear();
-                Debug.Log("Clear");
-            };
+            SceneManager.sceneUnloaded += _ => _instance.sceneContext.Clear();
         }
 
         if (isGlobal)

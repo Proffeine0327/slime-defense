@@ -3,29 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public partial class Slime : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+public partial class Slime : Unit, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     //services
     private SlimeManager slimeManager => ServiceProvider.Get<SlimeManager>();
     private GameManager gameManager => ServiceProvider.Get<GameManager>();
     private InputManager inputManager => ServiceProvider.Get<InputManager>();
+    private DataContext dataContext => ServiceProvider.Get<DataContext>();
     private Grids grids => ServiceProvider.Get<Grids>();
 
     //field
+    private string key;
     private int lv;
     private float currentAttackDelay;
     private Vector2Int index;
     private SlimeAnimator animator;
     private SlimeAttacker attacker;
-    private Stat stat;
 
     //property
-
+    private DataContext.SlimeData slimeData => dataContext.slimeDatas[key];
 
     //method
 
     private void Start()
     {
+        
+
         animator = new SlimeAnimator(this);
         attacker = new SlimeAttacker(this);
     }
@@ -40,8 +43,8 @@ public partial class Slime : MonoBehaviour, IPointerClickHandler, IBeginDragHand
         {
             if(attacker.IsEnemyInRange())
             {
-                animator.PlayAttack("test");
-                currentAttackDelay = stat.attackDelay;
+                animator.PlayAttack(slimeData.atkAnimKey);
+                currentAttackDelay = stat.GetStat("attack speed");
             }
         }
     }

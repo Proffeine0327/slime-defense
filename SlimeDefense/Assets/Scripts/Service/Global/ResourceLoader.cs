@@ -3,16 +3,13 @@ using UnityEngine;
 
 public class ResourceLoader : MonoBehaviour
 {
-    public Dictionary<string, GameObject> SlimeModels { get; private set; }
+    public Dictionary<string, Slime> slimeModels = new();
 
     private void Awake()
     {
         ServiceProvider.Register(this, true);
 
-        
-
-        SlimeModels = new();
-        foreach(var model in Resources.LoadAll<GameObject>("Prefab/Slime"))
-            SlimeModels.Add(model.name, model);   
+        foreach(var model in Resources.LoadAll<Slime>("Prefab/Slime"))
+            slimeModels.Add(model.name, model);   
     }
 }

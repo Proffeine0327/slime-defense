@@ -18,7 +18,7 @@ public partial class Slime
                 .OverlapCapsule(
                     slime.transform.position + (Vector3.up * 100), 
                     slime.transform.position + (Vector3.down * 100), 
-                    slime.stat.attackRange, 
+                    slime.stat.GetStat("attack range"), 
                     LayerMask.GetMask("Enemy"))
                 .Any();
         }
