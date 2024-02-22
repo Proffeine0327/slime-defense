@@ -51,6 +51,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "SlimeDefense.sln",
+    "dotnet.defaultSolution": "slime-defense.sln",
     "unity-code-snippets.style": "allman"
 }
