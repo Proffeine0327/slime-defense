@@ -10,8 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2987415681755613838}
   - component: {fileID: 6815552963941541875}
+  - component: {fileID: 5775897334696183933}
+  - component: {fileID: 9024914236363344919}
   m_Layer: 0
-  m_Name: services-global
+  m_Name: Services-Global
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,3 +46,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e3a4e1d6b16d8744b0f2ec1dea52038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5775897334696183933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6394716208681305269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 813dbe562cd019646a6a43fbe0d78ec6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &9024914236363344919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6394716208681305269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a57483b1460b24a96da3a0b2573611, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameData:
+    maxLv: 0
+  userData:
+    hp: 999
+    money: 0
+    deck: []
+    unlockStages: 
+    saveData:
+      isInfinity: 0
+      stage: -1
+      wave: 0
+      money: 0
+      life: 0
+      killAmount: 0
+      playTime: 0
+      deck: []
+      arguments: []
+      playerunits: []
+      obstacles: []
+      grids: []

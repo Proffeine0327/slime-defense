@@ -18,6 +18,11 @@ public class SlimeManager : MonoBehaviour
         
     }
 
+    public void Select(Vector2Int xy)
+    {
+        
+    }
+
     public bool MoveUnit(Vector2Int from, Vector2Int to)
     {
         // if (from == to) return false;
@@ -59,6 +64,11 @@ public class SlimeManager : MonoBehaviour
         // grids.GetGrid(to).Slime = grids.GetGrid(from).Slime;
         // grids.GetGrid(from).Slime = null;
         // OnUnitUpdate?.Invoke();
+        return true;
+    }
+
+    public bool SpawnUnit(string slimeKey, Vector2Int xy)
+    {
         return true;
     }
 }

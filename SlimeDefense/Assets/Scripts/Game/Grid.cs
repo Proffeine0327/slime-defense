@@ -13,6 +13,7 @@ public class Grid : MonoBehaviour
     [SerializeField] private Vector2Int xy;
     [SerializeField] private GridType gridType;
 
+    public Vector2Int XY => xy;
     public Slime Slime { get; set; }
 
     public void Init(GridType type, Vector2Int xy)

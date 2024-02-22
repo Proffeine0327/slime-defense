@@ -25,21 +25,30 @@ public class ServiceProvider : MonoBehaviour
                 DontDestroyOnLoad(instance.gameObject);
             }
             else
+            {
                 Debug.LogWarning($"{typeof(T).FullName} type already exist in global context.");
+                Destroy(instance.gameObject);
+            }
         }
         else
         {
             if (!_instance.sceneContext.ContainsKey(typeof(T).FullName))
                 _instance.sceneContext.Add(typeof(T).FullName, instance);
             else
+            {
                 Debug.LogWarning($"{typeof(T).FullName} type already exist in scene context.");
+                Destroy(instance.gameObject);
+            }
         }
     }
 
     public static T Get<T>() where T : MonoBehaviour
     {
-        T inst = _instance.sceneContext[typeof(T).FullName] as T;
-        if (inst) return inst;
+        if (_instance.sceneContext.ContainsKey(typeof(T).FullName))
+        {
+            T inst = _instance.sceneContext[typeof(T).FullName] as T;
+            return inst;
+        }
         return _instance.globalContext[typeof(T).FullName] as T;
     }
 
