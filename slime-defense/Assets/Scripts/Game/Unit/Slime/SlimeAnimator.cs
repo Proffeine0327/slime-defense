@@ -1,17 +1,16 @@
 using System.Collections;
-using UnityEngine;
 
 public partial class Slime
 {
-    public class SlimeAnimator
+    public class Animator
     {
         private Slime slime;
-        private Animator animator;
+        private UnityEngine.Animator animator;
 
-        public SlimeAnimator(Slime slime)
+        public Animator(Slime slime)
         {
             this.slime = slime;
-            animator = slime.GetComponent<Animator>();
+            animator = slime.GetComponent<UnityEngine.Animator>();
         }
 
         public void PlayLookAround()

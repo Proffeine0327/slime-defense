@@ -1,39 +1,45 @@
+using System;
 using System.Linq;
 using UnityEngine;
 
 public partial class Slime
 {
-    public class SlimeAttacker
+    public class Attacker
     {
         private Slime slime;
+        private Enemy target;
 
-        public SlimeAttacker(Slime slime)
+        public Enemy Target => target;
+
+        public Attacker(Slime slime)
         {
             this.slime = slime;
         }
 
-        private Collider[] GetColliderInRange()
+        private Collider[] GetEnemiesInRange()
         {
             return Physics
                 .OverlapCapsule(
-                    slime.transform.position + (Vector3.up * 100), 
-                    slime.transform.position + (Vector3.down * 100), 
-                    slime.maxStats.GetStat(Stats.Key.AttackRange), 
+                    slime.transform.position + (Vector3.up * 100),
+                    slime.transform.position + (Vector3.down * 100),
+                    slime.maxStats.GetStat(Stats.Key.AttackRange),
                     LayerMask.GetMask("Enemy"));
         }
 
-        public bool IsEnemyInRange()
+        public bool HasTarget()
         {
-            return GetColliderInRange().Any();
-        }
-
-        public void AttackEnemy()
-        {
-            var enemy = GetColliderInRange()
-                .Select(c => c.GetComponent<Enemy>())
-                .OrderByDescending(e => e.Distance)
-                .First();
-            enemy.Damage(slime.maxStats.GetStat(Stats.Key.AttackDamage));
+            if (target != null)
+            {
+                if (Vector3.Distance(slime.transform.position, target.transform.position) > slime.curStats.GetStat(Stats.Key.AttackRange) + 0.25f)
+                    target = null;
+                else
+                    return true;
+            }
+            
+            var enemies = GetEnemiesInRange();
+            if (enemies.Length == 0) return false;
+            target = enemies.Select(e => e.GetComponent<Enemy>()).OrderByDescending(e => e.Distance).First();
+            return true;
         }
     }
 }

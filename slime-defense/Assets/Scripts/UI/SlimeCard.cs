@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Game.UI
 {
-    public class SlimeCard : PopupTrigger, IPointerClickHandler
+    public class SlimeCard : PopupTrigger, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         //service
         private SlimeManager slimeManager => ServiceProvider.Get<SlimeManager>();
@@ -24,51 +24,45 @@ namespace Game.UI
         [SerializeField] private TextMeshProUGUI moneyText;
 
         private string slimeKey;
+        private Slime data;
         private Slime preview;
 
         //property
-        private SlimeData data => dataContext.slimeDatas[slimeKey];
+        private SlimeData slimedata => dataContext.slimeDatas[slimeKey];
+        private Explain explain => popup as Explain;
 
         //method
         public void Init(string key)
         {
             slimeKey = key;
 
-            Debug.Log(data.tier);
-            background.color = dataContext.tierDatas[data.tier].color;
-            border.color = dataContext.tierDatas[data.tier].color;
-            // profile.sprite = resourceLoader.slimeProfiles[slimeKey];
-            nameText.text = data.name;
-            moneyText.text = data.cost.ToString("#,##0");
+            data = new Slime.Builder(slimeKey).BuildOnlyData();
+            data.transform.SetParent(transform);
+            Debug.Log(data.transform.parent);
 
+            background.color = dataContext.tierDatas[slimedata.tier].color;
+            border.color = dataContext.tierDatas[slimedata.tier].color;
+            profile.sprite = resourceLoader.slimeIcons.GetValueOrDefault(slimeKey);
+            nameText.text = slimedata.name;
+            moneyText.text = slimedata.cost.ToString("#,##0");
+
+            OnChangeState += state =>
+            {
+                var skilldata = data.skill;
+                if (state) explain.Display(skilldata.Icon, skilldata.Name, skilldata.Explain);
+                else explain.Hide();
+            };
             popup.Hide();
-            Debug.Log("Initialize");
-        }
-
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            if (eventData.dragging) return;
-
-            var emptyGrids = grids.GetGrids();
-
-            if (emptyGrids.Count == 0)
-            {
-                //cannot spawn
-            }
-            else
-            {
-                var targetGrid = emptyGrids[Random.Range(0, emptyGrids.Count)];
-                if(slimeManager.SpawnUnit(slimeKey, targetGrid.XY))
-                    slimeManager.Select(targetGrid.XY);
-            }
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            // preview = Instantiate(targetData.prefab);
-            // preview.Init(targetData.name, isPreview: true);
-            // grids.DisplayGrids(targetData.placeableState);
-            // sliemManager.Select(null);
+            popup.Hide();
+            preview = new Slime.Builder(slimedata.slimeKey)
+                .SetPreview()
+                .Build();
+            grids.DisplayGrids(slimedata.grid);
+            slimeManager.Select(null);
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -88,8 +82,13 @@ namespace Game.UI
             if (plane.Raycast(inputManager.TouchRay, out var dist))
             {
                 var hitPoint = inputManager.TouchRay.GetPoint(dist);
-                // if(grids.PosInGrid(hitPoint) && sliemManager.SpawnUnit(targetKey, grids.ToIndex(hitPoint)))
-                //     sliemManager.Select(grids.ToIndex(hitPoint));
+                var posInGrid = grids.PosInGrid(hitPoint);
+                var spawnUnit = slimeManager.CreateSlime(slimedata.slimeKey, grids.ToIndex(hitPoint));
+
+                Debug.Log(spawnUnit);
+
+                if (posInGrid && spawnUnit)
+                    slimeManager.Select(grids.ToIndex(hitPoint));
             }
 
             Destroy(preview.gameObject);

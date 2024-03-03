@@ -1,19 +1,32 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class ResourceLoader : MonoBehaviour
 {
-    public Dictionary<string, Slime> slimeModels = new();
-    public Dictionary<string, Sprite> slimeProfiles = new();
+    public Material gridDefaultMaterial;
+    public Material gridPlaceableMaterial;
+    public Material gridUnplaceableMaterial;
+    public Dictionary<string, Slime> slimePrefabs = new();
+    public Dictionary<string, Enemy> enemyPrefabs = new();
+    public Dictionary<string, Sprite> slimeIcons = new();
+    public Dictionary<string, Sprite> skillIcons = new();
 
     private void Awake()
     {
         ServiceProvider.Register(this, true);
 
-        foreach(var model in Resources.LoadAll<Slime>("Prefab/Slime"))
-            slimeModels.Add(model.name, model);
+        gridDefaultMaterial = Resources.Load<Material>("Materials/Grid/Default");
+        gridPlaceableMaterial = Resources.Load<Material>("Materials/Grid/Placeable");
+        gridUnplaceableMaterial = Resources.Load<Material>("Materials/Grid/Unplaceable");
+
+        foreach(var prefab in Resources.LoadAll<Slime>("Prefabs/Slime"))
+            slimePrefabs.Add(prefab.name, prefab);
+
+        foreach(var prefab in Resources.LoadAll<Enemy>("Prefabs/Enemy"))
+            enemyPrefabs.Add(prefab.name, prefab);
         
-        foreach(var sprite in Resources.LoadAll<Sprite>("Sprite/Slime/Profile"))
-            slimeProfiles.Add(sprite.name, sprite);
+        foreach(var sprite in Resources.LoadAll<Sprite>("Sprites/Slime/Profile"))
+            slimeIcons.Add(sprite.name, sprite);
     }
 }

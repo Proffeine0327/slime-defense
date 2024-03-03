@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Text;
+using UniRx;
+using System.Collections;
 
-public class Stats
+public partial class Stats
 {
     public enum Key
     {
@@ -19,22 +22,22 @@ public class Stats
         AbsSight,
     }
 
-    private Dictionary<Key, float> stats = new();
+    private ReactiveDictionary<Key, float> stats = new();
 
-    public IReadOnlyDictionary<Key, float> _Stats => stats;
+    public event Action<Key, float, float> OnStatChanged;
 
-    /// <summary>
-    /// return l - r
-    /// </summary>
-    /// <param name="l">left</param>
-    /// <param name="r">right</param>
-    /// <returns></returns>
-    public static Stats GetDifference(Stats l, Stats r)
+    public Stats()
     {
-        var diff = l.Clone();
-        foreach(var rstat in r.stats)
-            l.ModifyStat(rstat.Key, x => x - rstat.Value);
-        return diff;
+        stats
+            .ObserveAdd()
+            .Subscribe(kvp => OnStatChanged?.Invoke(kvp.Key, 0, kvp.Value));
+        stats
+            .ObserveRemove()
+            .Subscribe(kvp => OnStatChanged?.Invoke(kvp.Key, kvp.Value, 0));
+        stats
+            .ObserveReplace()
+            .Where(kv => kv.OldValue != kv.NewValue)
+            .Subscribe(kvp => OnStatChanged?.Invoke(kvp.Key, kvp.OldValue, kvp.NewValue));
     }
 
     public float this[Key key]
@@ -47,6 +50,11 @@ public class Stats
     {
         if (!stats.ContainsKey(key)) return 0;
         return stats[key];
+    }
+
+    public IReadOnlyDictionary<Key, float> GetStats()
+    {
+        return new Dictionary<Key, float>(stats);
     }
 
     public void ModifyStat(Key key, Func<float, float> modifier)
@@ -67,11 +75,28 @@ public class Stats
 
     public void ClearStat()
     {
-        stats.Clear();
+        foreach (var s in stats)
+            stats.Remove(s.Key);
     }
 
     public Stats Clone()
     {
-        return new Stats() { stats = new(stats) };
+        var stats = new Stats();
+        stats.ChangeFrom(this);
+        return stats;
+    }
+
+    public void ChangeFrom(Stats stats)
+    {
+        foreach (var stat in stats.GetStats())
+            ModifyStat(stat.Key, x => stat.Value);
+    }
+
+    public override string ToString()
+    {
+        var sb = new StringBuilder();
+        foreach (var stat in stats)
+            sb.Append(stat.ToString()).Append('\n');
+        return sb.ToString();
     }
 }

@@ -10,10 +10,15 @@ public enum GridType { None, Ground, Road }
 
 public class Grid : MonoBehaviour
 {
+    //service
+    private ResourceLoader resourceLoader => ServiceProvider.Get<ResourceLoader>();
+
     [SerializeField] private Vector2Int xy;
     [SerializeField] private GridType gridType;
 
+    public MeshRenderer meshRenderer;
     public Vector2Int XY => xy;
+    public GridType Type => gridType;
     public Slime Slime { get; set; }
 
     public void Init(GridType type, Vector2Int xy)
@@ -22,13 +27,21 @@ public class Grid : MonoBehaviour
         this.xy = xy;
     }
 
+    private void Start()
+    {
+        meshRenderer = GetComponent<MeshRenderer>();
+    }
+
     public void Display(GridType type)
     {
-        
+        meshRenderer.sharedMaterial =
+            type == gridType ?
+            resourceLoader.gridPlaceableMaterial :
+            resourceLoader.gridUnplaceableMaterial;
     }
 
     public void Hide()
     {
-        
+        meshRenderer.sharedMaterial = resourceLoader.gridDefaultMaterial;
     }
 }

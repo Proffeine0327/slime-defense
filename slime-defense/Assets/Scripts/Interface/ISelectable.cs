@@ -1,4 +1,5 @@
 public interface ISelectable
 {
-    public abstract Stats displayStat { get; }
+    public abstract int Lv { get; }
+    public abstract Stats DisplayStat { get; }
 }

@@ -5,35 +5,57 @@ using UnityEngine;
 
 public partial class Effects
 {
-    public readonly Stats stats;
-    public readonly StatModifier modifier;
-    
+    //serivces
+    private GameManager gameManager => ServiceProvider.Get<GameManager>();
+
+    public readonly UnitBase owner;
+
     private Dictionary<string, EffectBase> container = new();
-    public IReadOnlyDictionary<string, EffectBase> Container => container;
 
-    public void AddEffect(string caster, EffectBase effect)
+    public void AddOrChange(string effectKey, EffectBase effect)
     {
-        if(container.ContainsKey(caster)) return;
-
+        if(!container.ContainsKey(effectKey))
+        {
+            Debug.Log("Add");
+            container.Add(effectKey, effect);
+        }
+        else
+        {
+            Debug.Log("Change");
+            container[effectKey].OnRemove();
+            container[effectKey] = effect;
+        }
+        effect.owner = owner;
         effect.OnAdd();
-        container.Add(caster, effect);
     }
 
-    public Effects(Stats stats, StatModifier modifier)
+    public void RemoveEffect(string effectKey)
     {
-        this.stats = stats;
-        this.modifier = modifier;
-        ServiceProvider.Get<MonoBehaviourEvent>().OnUpdate += UpdateEffects;
+        if(!container.ContainsKey(effectKey)) return;
+        
+        container[effectKey].OnRemove();
+        container.Remove(effectKey);
+    }
+
+    public IReadOnlyDictionary<string, EffectBase> GetContainer()
+    {
+        return container;
+    }
+
+    public Effects(UnitBase owner)
+    {
+        this.owner = owner;
+        gameManager.OnWaveEnd += RoundEndEvent;
     }
 
     ~Effects()
     {
-        ServiceProvider.Get<MonoBehaviourEvent>().OnUpdate -= UpdateEffects;
+        gameManager.OnWaveEnd -= RoundEndEvent;
     }
 
-    public void UpdateEffects()
+    private void RoundEndEvent()
     {
-        foreach(var e in container)
-            e.Value.OnUpdate();
+        foreach(var c in container)
+            c.Value.OnRoundEnd();
     }
 }

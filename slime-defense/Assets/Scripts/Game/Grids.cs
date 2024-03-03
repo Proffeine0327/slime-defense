@@ -56,7 +56,9 @@ public class Grids : MonoBehaviour
 
     public Vector3 Snap(Vector3 hitPoint)
     {
-        return Vector3Int.RoundToInt(hitPoint);
+        Vector3 snapped = Vector3Int.RoundToInt(hitPoint);
+        snapped.y = transform.position.y;
+        return snapped;
     }
 
     public bool PosInGrid(Vector3 worldPos)
@@ -73,7 +75,9 @@ public class Grids : MonoBehaviour
     public void DisplayGrids(GridType type)
     {
         foreach (var grid in GetGrids())
+        {
             grid.Display(type);
+        }
     }
 
     public void HideAllGrids()

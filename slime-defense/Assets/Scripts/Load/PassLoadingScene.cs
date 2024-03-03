@@ -10,7 +10,6 @@ public class PassLoadingScene : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(taskWaiter.Progress);
         if(taskWaiter.IsEndLoad)
         {
             SceneManager.LoadScene("development");

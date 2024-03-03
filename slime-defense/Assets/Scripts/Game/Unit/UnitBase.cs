@@ -5,36 +5,33 @@ using System.Linq;
 
 public abstract partial class UnitBase : MonoBehaviour
 {
-    protected Stats maxStats;
-    protected Stats currentStats;
-    protected StatModifier modifier;
-    protected Effects effect;
+    protected abstract Stats BaseStats { get; }
 
-    protected virtual void Awake()
+    public Stats maxStats;
+    public Stats curStats;
+    public Stats.Modifier modifier;
+    public Effects effects;
+    public SkillBase skill;
+
+    protected virtual void Start()
     {
         maxStats = new();
+        curStats = new();
         modifier = new();
-        effect = new(maxStats, modifier);
+        effects = new(this);
+        if (skill == null) skill = new SkillBase(this);
 
-        modifier.OnAnyValueChanged += CalculateStat;
-    }
-
-    public void CalculateStat()
-    {
-        var pre = maxStats.Clone();
-        modifier.Calculate(maxStats);
-        var diff = Stats.GetDifference(maxStats, pre);
-        foreach (var v in diff._Stats)
+        maxStats.OnStatChanged += (key, oldvalue, newvalue) =>
         {
-            if (v.Key == Stats.Key.Hp)
-            {
-                if (v.Value > 0)
-                    currentStats.ModifyStat(v.Key, x => x + v.Value);
-            }
-            else
-            {
-                currentStats.ModifyStat(v.Key, x => x + v.Value);
-            }
-        }
+            curStats.ModifyStat(key, x => Mathf.Clamp(x, float.MinValue, maxStats.GetStat(key)));
+
+            var diff = newvalue - oldvalue;
+            if (key == Stats.Key.Hp && diff < 0) return;
+            if (key == Stats.Key.AttackDelay) return;
+
+            curStats.ModifyStat(key, x => x + diff);
+        };
+
+        modifier.OnValueChange += key => modifier.Calculate(key, maxStats, BaseStats);
     }
 }

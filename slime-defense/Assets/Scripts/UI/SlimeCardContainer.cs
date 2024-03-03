@@ -12,7 +12,7 @@ namespace Game.UI
         [SerializeField] private RectTransform cardGroup;
         [SerializeField] private Explain explain;
 
-        private void Awake()
+        private void Start()
         {
             var testKey = new string[]
             {

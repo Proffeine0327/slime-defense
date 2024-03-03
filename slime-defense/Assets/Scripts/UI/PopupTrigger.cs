@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PopupTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class PopupTrigger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     private CanvasManager canvasManager => ServiceProvider.Get<CanvasManager>();
 
@@ -33,7 +33,7 @@ public class PopupTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         if (popup) Destroy(popup);
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public void OnPointerDown(PointerEventData eventData)
     {
         OnChangeState?.Invoke(true);
         if (popup)
@@ -44,7 +44,7 @@ public class PopupTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         }
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public void OnPointerUp(PointerEventData eventData)
     {
         OnChangeState?.Invoke(false);
         if (popup)

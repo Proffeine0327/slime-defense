@@ -6,7 +6,6 @@ public class InputManager : MonoBehaviour
     private CameraManager cameraManager => ServiceProvider.Get<CameraManager>();
 
     [SerializeField] private bool isMobile;
-    private Vector2 lastScreenTouchPosition;
 
     public Ray TouchRay { get; private set; }
 
@@ -16,6 +15,11 @@ public class InputManager : MonoBehaviour
     public bool IsDragging { get; private set; }
     public Vector2 TouchBeginPosition { get; private set; }
     public Vector2 TouchPosition { get; private set; }
+
+    private void Start()
+    {
+        ServiceProvider.Register(this);
+    }
 
     private void Update()
     {
@@ -61,6 +65,6 @@ public class InputManager : MonoBehaviour
             if(!IsTouch) IsDragging = false;
         }
 
-        TouchRay = cameraManager.MainCamera.ScreenPointToRay(TouchPosition);
+        TouchRay = cameraManager.mainCamera.ScreenPointToRay(TouchPosition);
     }
 }
