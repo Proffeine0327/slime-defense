@@ -5,14 +5,16 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    //service
-    private ObjectPool objectPool => ServiceProvider.Get<ObjectPool>();
-
     private Poolable poolable;
 
-    private void Start()
+    private Poolable Poolable
     {
-        poolable = GetComponent<Poolable>();
+        get
+        {
+            if(!poolable)
+                poolable = GetComponent<Poolable>();
+            return poolable;
+        }
     }
 
     public void Fire(Enemy target, Action<Enemy> onHit)
@@ -23,11 +25,11 @@ public class Bullet : MonoBehaviour
 
     private IEnumerator MoveRoutine(Enemy target, Action<Enemy> onHit)
     {
-        while (Vector3.Distance(target.transform.position, transform.position) > 0.5f)
+        while (Vector3.Distance(target.transform.position, transform.position) > 0.25f)
         {
             if (target.IsDisabled)
             {
-                poolable.Pool();
+                Poolable.Pool();
                 yield break;
             }
 
@@ -36,6 +38,6 @@ public class Bullet : MonoBehaviour
             yield return null;
         }
         onHit?.Invoke(target);
-        poolable.Pool();
+        Poolable.Pool();
     }
 }

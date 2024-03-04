@@ -16,6 +16,7 @@ public partial class Slime : UnitBase, ISelectable, IPointerClickHandler, IBegin
 
     //field
     private bool isPreview;
+    private bool look;
     private string slimeKey;
     private ReactiveProperty<int> lv = new();
     private Vector2Int index;
@@ -69,6 +70,8 @@ public partial class Slime : UnitBase, ISelectable, IPointerClickHandler, IBegin
         rangeDisplayer.Active(IsSelected);
         if (!gameManager.IsWaveStart) return;
 
+        if (look) LookEnemy(attacker.Target);
+
         if (curStats.GetStat(Stats.Key.AttackDelay) < maxStats.GetStat(Stats.Key.AttackDelay))
         {
             curStats.ModifyStat(Stats.Key.AttackDelay, x => x + Time.deltaTime);
@@ -77,7 +80,7 @@ public partial class Slime : UnitBase, ISelectable, IPointerClickHandler, IBegin
         {
             if (attacker.HasTarget())
             {
-                LookEnemy(attacker.Target);
+                look = true;
                 animator.PlayAttack(SlimeData.atkAnimKey);
                 curStats.ModifyStat(Stats.Key.AttackDelay, x => 0);
             }
@@ -91,9 +94,11 @@ public partial class Slime : UnitBase, ISelectable, IPointerClickHandler, IBegin
 
     public void Attack()
     {
-        if (SlimeData.bulletKey != string.Empty)
+        look = false;
+        if (!string.IsNullOrEmpty(SlimeData.bulletKey))
         {
             var bullet = objectPool.GetObject(SlimeData.bulletKey);
+            bullet.transform.position = transform.position;
             bullet.GetComponent<Bullet>().Fire(attacker.Target, target =>
             {
                 skill.OnAttack(target);
@@ -101,7 +106,7 @@ public partial class Slime : UnitBase, ISelectable, IPointerClickHandler, IBegin
                     .GetObject
                     (
                         SlimeData.atkParticleKey,
-                        attacker.Target.transform.position
+                        attacker.Target.transform.position + Vector3.up * 0.5f
                     )
                     .GetComponent<Particle>()
                     .Play();
@@ -114,7 +119,7 @@ public partial class Slime : UnitBase, ISelectable, IPointerClickHandler, IBegin
                 .GetObject
                 (
                     SlimeData.atkParticleKey,
-                    attacker.Target.transform.position
+                    attacker.Target.transform.position + Vector3.up * 0.5f
                 )
                 .GetComponent<Particle>()
                 .Play();

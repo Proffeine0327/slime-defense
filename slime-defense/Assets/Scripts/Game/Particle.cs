@@ -4,21 +4,27 @@ using UnityEngine;
 
 public class Particle : MonoBehaviour
 {
-    //service
-    private ObjectPool objectPool => ServiceProvider.Get<ObjectPool>();
-
     private ParticleSystem p;
     private Poolable poolable;
+
+    private Poolable Poolable
+    {
+        get
+        {
+            if(poolable == null)
+                poolable = GetComponent<Poolable>();
+            return poolable;
+        }
+    }
 
     private void Awake()
     {
         p = GetComponent<ParticleSystem>();
-        poolable = GetComponent<Poolable>();
     }
 
     public void Play()
     {
         p.Play();
-        this.Invoke(() => poolable.Pool(), p.main.duration);   
+        this.Invoke(() => Poolable.Pool(), p.main.duration);
     }
 }

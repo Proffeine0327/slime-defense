@@ -18,6 +18,17 @@ public partial class Enemy : UnitBase
     public event Action OnDeath;
     public event Action OnArrive;
 
+    protected override void Start()
+    {
+        base.Start();
+
+        curStats.OnStatChanged += (key, pre, cur) =>
+        {
+            if (key != Stats.Key.Hp) return;
+            Debug.Log($"Damaged {pre - cur}");
+        };
+    }
+
     public void Init(int lv)
     {
         maxStats.ChangeFrom(BaseStats);
