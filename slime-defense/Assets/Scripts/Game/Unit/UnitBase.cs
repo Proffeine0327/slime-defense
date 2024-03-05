@@ -13,7 +13,7 @@ public abstract partial class UnitBase : MonoBehaviour
     public Effects effects;
     public SkillBase skill;
 
-    protected virtual void Start()
+    protected virtual void Initialize()
     {
         maxStats = new();
         curStats = new();

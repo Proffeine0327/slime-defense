@@ -11,6 +11,7 @@ namespace Game.UI
     {
         //service
         private SlimeManager slimeManager => ServiceProvider.Get<SlimeManager>();
+        private SelectManager selectManager => ServiceProvider.Get<SelectManager>();
         private InputManager inputManager => ServiceProvider.Get<InputManager>();
         private DataContext dataContext => ServiceProvider.Get<DataContext>();
         private ResourceLoader resourceLoader => ServiceProvider.Get<ResourceLoader>();
@@ -62,7 +63,7 @@ namespace Game.UI
                 .SetPreview()
                 .Build();
             grids.DisplayGrids(slimedata.grid);
-            slimeManager.Select(null);
+            selectManager.Select(null);
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -88,7 +89,7 @@ namespace Game.UI
                 Debug.Log(spawnUnit);
 
                 if (posInGrid && spawnUnit)
-                    slimeManager.Select(grids.ToIndex(hitPoint));
+                    selectManager.Select(grids.ToIndex(hitPoint));
             }
 
             Destroy(preview.gameObject);

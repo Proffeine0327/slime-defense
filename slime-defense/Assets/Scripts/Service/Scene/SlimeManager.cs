@@ -5,35 +5,18 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SlimeManager : MonoBehaviour, IPointerClickHandler
+public class SlimeManager : MonoBehaviour
 {
     //services
     private Grids grids => ServiceProvider.Get<Grids>();
     private DataContext dataContext => ServiceProvider.Get<DataContext>();
-    private ResourceLoader resourceLoader => ServiceProvider.Get<ResourceLoader>();
-
-    private ReactiveProperty<ISelectable> select = new();
 
     public event Action OnUnitUpdate;
-    public event Action<ISelectable> OnSelect;
-
-    public ISelectable CurrentSelect => select.Value;
     
     private void Awake()
     {
         ServiceProvider.Register(this);
         
-        select.Subscribe(select => OnSelect?.Invoke(select));
-    }
-
-    public void Select(ISelectable selectable)
-    {
-        select.Value = selectable;
-    }
-
-    public void Select(Vector2Int xy)
-    {
-        select.Value = grids.GetGrid(xy).Slime;
     }
 
     public bool MoveSlime(Vector2Int from, Vector2Int to)
@@ -86,36 +69,38 @@ public class SlimeManager : MonoBehaviour, IPointerClickHandler
     public bool CreateSlime(string slimeKey, Vector2Int xy)
     {
         var data = dataContext.slimeDatas[slimeKey];
-        var gameData = dataContext.userData.saveData;
+        var grid = grids.GetGrid(xy);
+        var saveData = dataContext.userData.saveData;
 
-        Debug.Log(gameData.money);
-        if (gameData.money < data.cost) return false;
+        Debug.Log(saveData.money);
+        if (saveData.money < data.cost) return false;
+        if (data.grid != grid.Type) return false;
 
-        if (grids.GetGrid(xy).Slime)
+        if (grid.Slime)
         {
-            var unit = grids.GetGrid(xy).Slime;
+            var unit = grid.Slime;
             if (unit.SlimeKey == slimeKey) return false;
             if (unit.Lv != 0) return false;
 
-            gameData.money -= data.cost;
+            saveData.money -= data.cost;
             unit.LevelUp();
             OnUnitUpdate?.Invoke();
             return true;
         }
 
-        var slimeData = dataContext.slimeDatas[slimeKey];
         var playerUnit = new Slime.Builder(slimeKey)
             .SetIndex(xy)
             .Build();
-        grids.GetGrid(xy).Slime = playerUnit;
-        gameData.money -= data.cost;
+        grid.Slime = playerUnit;
+        saveData.money -= data.cost;
         // SoundManager.PlaySound("Tower_Apperance", 50);
         OnUnitUpdate?.Invoke();
         return true;
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public void SellSlime(Vector2Int xy)
     {
-        Select(null);
+        var grid = grids.GetGrid(xy);
+        grid.Slime = null;
     }
 }

@@ -23,15 +23,16 @@ public class SlimeData
         var stats = new List<Stats>();
         var sCount = count;
         var maxLv = ServiceProvider.Get<DataContext>().gameData.maxLv;
-        for (int i = 0; i <= maxLv; i++)
+        for (int i = 0; i < maxLv; i++)
         {
             count = sCount;
             var stat = new Stats();
             stat.AddStat(Stats.Key.AttackRange, float.Parse(split[count++]));
-            stat.AddStat(Stats.Key.AttackDamage, Mathf.Lerp(i / (float)maxLv, float.Parse(split[count++]), float.Parse(split[count++])));
-            stat.AddStat(Stats.Key.AbilityPower, Mathf.Lerp(i / (float)maxLv, float.Parse(split[count++]), float.Parse(split[count++])));
-            stat.AddStat(Stats.Key.AttackDelay, Mathf.Lerp(i / (float)maxLv, float.Parse(split[count++]), float.Parse(split[count++])));
+            stat.AddStat(Stats.Key.AttackDamage, Mathf.Lerp(float.Parse(split[count++]), float.Parse(split[count++]), i / (float)maxLv));
+            stat.AddStat(Stats.Key.AbilityPower, Mathf.Lerp(float.Parse(split[count++]), float.Parse(split[count++]), i / (float)maxLv));
+            stat.AddStat(Stats.Key.AttackDelay, Mathf.Lerp(float.Parse(split[count++]), float.Parse(split[count++]), i / (float)maxLv));
             stats.Add(stat);
+            Debug.Log(stat.ToString());
         }
         data.stats = stats.ToArray();
 
@@ -60,10 +61,13 @@ public class EnemyData
         data.name = split[count++];
         data.baseStat.AddStat(Stats.Key.Hp, float.Parse(split[count++]));
         data.baseStat.AddStat(Stats.Key.Speed, float.Parse(split[count++]));
+        data.baseStat.AddStat(Stats.Key.AbilityPower, float.Parse(split[count++]));
         data.upgradeHpPercentage = float.Parse(split[count++]);
         data.upgradeHpAdd = float.Parse(split[count++]);
         data.upgradeSpeedPercentage = float.Parse(split[count++]);
         data.upgradeSpeedAdd = float.Parse(split[count++]);
+        data.upgradeApPercentage = float.Parse(split[count++]);
+        data.upgradeApAdd = float.Parse(split[count++]);
         return data;
     }
 
@@ -74,6 +78,8 @@ public class EnemyData
     public float upgradeHpAdd;
     public float upgradeSpeedPercentage;
     public float upgradeSpeedAdd;
+    public float upgradeApPercentage;
+    public float upgradeApAdd;
 }
 public class GameData
 {

@@ -25,7 +25,7 @@ public partial class Slime
             var slime = Instantiate(resourceLoader.slimePrefabs[slimeKey]);
             slime.slimeKey = slimeKey;
             slime.lv.Value = 1;
-            slime.Start();
+            slime.Initialize();
             slime.skill = SkillBase.GetSkill(dataContext.slimeDatas[slimeKey].skillKey, slime);
             slime.gameObject.SetActive(false);
             slime.enabled = false;
@@ -59,6 +59,7 @@ public partial class Slime
             slime.isPreview = preview;
             slime.skill = SkillBase.GetSkill(dataContext.slimeDatas[slimeKey].skillKey, slime);
             slime.MoveTo(index);
+            slime.Initialize();
             return slime;
         }
     }

@@ -27,5 +27,12 @@ public class EnemyUpgradeEffect : EffectBase
             percent: _ => dataContext.enemyDatas[key].upgradeSpeedPercentage * (lv - 1),
             add: _ => dataContext.enemyDatas[key].upgradeSpeedAdd * (lv - 1)
         );
+        enemy.modifier.Set
+        (
+            caster: "EnemyUpgradeAp",
+            key: Stats.Key.AbilityPower,
+            percent: _ => dataContext.enemyDatas[key].upgradeApPercentage * (lv - 1),
+            add: _ => dataContext.enemyDatas[key].upgradeApAdd * (lv - 1)
+        );
     }
 }

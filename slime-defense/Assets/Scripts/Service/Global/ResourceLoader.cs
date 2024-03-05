@@ -26,7 +26,7 @@ public class ResourceLoader : MonoBehaviour
         foreach(var prefab in Resources.LoadAll<Enemy>("Prefabs/Enemy"))
             enemyPrefabs.Add(prefab.name, prefab);
         
-        foreach(var sprite in Resources.LoadAll<Sprite>("Sprites/Slime/Profile"))
+        foreach(var sprite in Resources.LoadAll<Sprite>("Sprites/Slime/Icon"))
             slimeIcons.Add(sprite.name, sprite);
     }
 }

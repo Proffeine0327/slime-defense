@@ -8,43 +8,50 @@ public partial class Slime : UnitBase, ISelectable, IPointerClickHandler, IBegin
 {
     //services
     private SlimeManager slimeManager => ServiceProvider.Get<SlimeManager>();
+    private SelectManager selectManager => ServiceProvider.Get<SelectManager>();
     private GameManager gameManager => ServiceProvider.Get<GameManager>();
     private InputManager inputManager => ServiceProvider.Get<InputManager>();
     private DataContext dataContext => ServiceProvider.Get<DataContext>();
+    private ResourceLoader resourceLoader => ServiceProvider.Get<ResourceLoader>();
     private ObjectPool objectPool => ServiceProvider.Get<ObjectPool>();
     private Grids grids => ServiceProvider.Get<Grids>();
 
     //field
     private bool isPreview;
-    private bool look;
+    private bool isLook;
+    private bool isDragging;
     private string slimeKey;
     private ReactiveProperty<int> lv = new();
-    private Vector2Int index;
+    private Vector2Int xy;
     private Animator animator;
     private Attacker attacker;
     private RangeDisplayer rangeDisplayer;
 
     //property
     private SlimeData SlimeData => dataContext.slimeDatas[slimeKey];
-    private bool IsSelected => ReferenceEquals(this, slimeManager.CurrentSelect);
+    private bool IsSelected => ReferenceEquals(this, selectManager.CurrentSelect);
 
     protected override Stats BaseStats => SlimeData.stats[lv.Value - 1];
 
-    public Stats DisplayStat => curStats;
     public int Lv => lv.Value;
+    public Stats DisplayStat => maxStats;
+    public Sprite Icon => resourceLoader.slimeIcons.GetValueOrDefault(slimeKey);
     public string SlimeKey => slimeKey;
     public bool IsMaxLv => dataContext.gameData.maxLv == lv.Value;
+    public bool IsRemovable => true;
+    public int RemoveCost => SlimeData.cost * (int)Mathf.Pow(2, lv.Value - 1);
+    public string RemoveExplain => $"판매: {RemoveCost}";
 
     //method
-    protected override void Start()
+    protected override void Initialize()
     {
-        base.Start();
+        base.Initialize();
         Debug.Log("Slime Start");
 
         animator = new(this);
         attacker = new(this);
 
-        rangeDisplayer = GetComponentInChildren<RangeDisplayer>();
+        rangeDisplayer = GetComponentInChildren<RangeDisplayer>(true);
 
         curStats.OnStatChanged += (key, pre, cur) =>
         {
@@ -67,10 +74,10 @@ public partial class Slime : UnitBase, ISelectable, IPointerClickHandler, IBegin
             return;
         }
 
-        rangeDisplayer.Active(IsSelected);
+        rangeDisplayer.Active(IsSelected || isDragging);
         if (!gameManager.IsWaveStart) return;
 
-        if (look) LookEnemy(attacker.Target);
+        if (isLook) LookEnemy(attacker.Target);
 
         if (curStats.GetStat(Stats.Key.AttackDelay) < maxStats.GetStat(Stats.Key.AttackDelay))
         {
@@ -80,7 +87,7 @@ public partial class Slime : UnitBase, ISelectable, IPointerClickHandler, IBegin
         {
             if (attacker.HasTarget())
             {
-                look = true;
+                isLook = true;
                 animator.PlayAttack(SlimeData.atkAnimKey);
                 curStats.ModifyStat(Stats.Key.AttackDelay, x => 0);
             }
@@ -90,11 +97,12 @@ public partial class Slime : UnitBase, ISelectable, IPointerClickHandler, IBegin
     public void LevelUp()
     {
         lv.Value++;
+        Debug.Log(lv.Value);
     }
 
     public void Attack()
     {
-        look = false;
+        isLook = false;
         if (!string.IsNullOrEmpty(SlimeData.bulletKey))
         {
             var bullet = objectPool.GetObject(SlimeData.bulletKey);
@@ -135,21 +143,22 @@ public partial class Slime : UnitBase, ISelectable, IPointerClickHandler, IBegin
 
     public void MoveTo(Vector2Int to)
     {
-        index = to;
+        xy = to;
         transform.position = grids.ToPos(to);
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.dragging) return;
-        slimeManager.Select(this);
+        selectManager.Select(this);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (gameManager.IsWaveStart) return;
 
-        slimeManager.Select(this);
+        isDragging = true;
+        selectManager.Select(null);
         grids.DisplayGrids(SlimeData.grid);
     }
 
@@ -174,15 +183,21 @@ public partial class Slime : UnitBase, ISelectable, IPointerClickHandler, IBegin
         {
             var movedIndex = grids.ToIndex(transform.position);
 
-            if (slimeManager.MoveSlime(index, movedIndex)) MoveTo(movedIndex);
-            else MoveTo(index);
+            if (slimeManager.MoveSlime(xy, movedIndex)) MoveTo(movedIndex);
+            else MoveTo(xy);
         }
         else
         {
-            MoveTo(index);
+            MoveTo(xy);
         }
 
+        isDragging = false;
         grids.HideAllGrids();
-        slimeManager.Select(this);
+        selectManager.Select(this);
+    }
+
+    public void OnRemove()
+    {
+        slimeManager.SellSlime(xy);
     }
 }

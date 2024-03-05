@@ -2,20 +2,58 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.IO;
+using System.Linq;
 
 #if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
 
+
 public class GridSettingEditorWindow : EditorWindow
 {
+    public class TwoDimensionalArrayWrapper<T>
+    {
+        private List<List<T>> array;
+
+        public readonly int xSize;
+        public readonly int ySize;
+
+        public T this[int y, int x]
+        {
+            get => array[y][x];
+            set => array[y][x] = value;
+        }
+
+        public TwoDimensionalArrayWrapper(int y, int x)
+        {
+            this.xSize = x;
+            this.ySize = y;
+            array = new(y);
+            for(int i = 0; i < y; i++)
+                array.Add(new List<T>(Enumerable.Repeat<T>(default, x)));
+        }
+
+        public T[,] ToArray()
+        {
+            var newArray = new T[ySize, xSize];
+            for(int y = 0; y < ySize; y++) for(int x = 0; x < xSize; x++)
+                newArray[y, x] = array[y][x];
+            return newArray;
+        }
+
+        public void ReverseY()
+        {
+            array.Reverse();
+        }
+    }
+
     public static void ShowWindow(Vector2Int size, Action<Material, int[,]> onSubmit)
     {
         var window = GetWindow<GridSettingEditorWindow>();
         window.titleContent = new GUIContent("GridSettingWindow");
         window.size = size;
-        window.table = new int[size.y, size.x];
+        window.table = new TwoDimensionalArrayWrapper<int>(size.y, size.x);
         window.isAlreadyAdded = new bool[size.y, size.x];
         window.onSubmit = onSubmit;
         window.screenshot = TakeScreenShot(size);
@@ -52,7 +90,7 @@ public class GridSettingEditorWindow : EditorWindow
     private float boxSize = 25f;
     private Vector2 boxOffset;
     private Action<Material, int[,]> onSubmit;
-    private int[,] table;
+    private TwoDimensionalArrayWrapper<int> table;
     private bool[,] isAlreadyAdded;
     private Texture2D screenshot;
 
@@ -105,10 +143,10 @@ public class GridSettingEditorWindow : EditorWindow
             var saveobj = new GridSettingDatas();
             saveobj.material = material;
 
-            for (int i = 0; i < table.GetLength(0); i++)
+            for (int i = 0; i < table.ySize; i++)
             {
                 saveobj.table.Add(new GridSettingDataTableRow());
-                for (int j = 0; j < table.GetLength(1); j++) saveobj.table[i].row.Add(table[i, j]);
+                for (int j = 0; j < table.xSize; j++) saveobj.table[i].row.Add(table[i, j]);
             }
             var content = JsonUtility.ToJson(saveobj);
             string directory = EditorUtility.OpenFolderPanel("Select Directory", Application.dataPath, "");
@@ -133,7 +171,8 @@ public class GridSettingEditorWindow : EditorWindow
         }
         if (GUI.Button(new Rect(boxOffset.x + boxSize * size.x - 100, boxOffset.y + 150 + boxSize * size.y, 100, 20), "Submit"))
         {
-            onSubmit?.Invoke(material, table);
+            table.ReverseY();
+            onSubmit?.Invoke(material, table.ToArray());
             this.Close();
         }
 

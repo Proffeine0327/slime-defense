@@ -16,7 +16,8 @@ public class Grid : MonoBehaviour
     [SerializeField] private Vector2Int xy;
     [SerializeField] private GridType gridType;
 
-    public MeshRenderer meshRenderer;
+    private MeshRenderer meshRenderer;
+
     public Vector2Int XY => xy;
     public GridType Type => gridType;
     public Slime Slime { get; set; }
@@ -27,7 +28,7 @@ public class Grid : MonoBehaviour
         this.xy = xy;
     }
 
-    private void Start()
+    private void Awake()
     {
         meshRenderer = GetComponent<MeshRenderer>();
     }

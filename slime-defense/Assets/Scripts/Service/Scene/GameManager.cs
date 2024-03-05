@@ -49,11 +49,17 @@ public class GameManager : MonoBehaviour
             var queue = new Queue<Enemy>();
             for (int i = 0; i < data.Value; i++)
             {
-                var enemy = new Enemy.Builder(data.Key).Build();
+                var key = data.Key;
+                var enemy = new Enemy.Builder(key).Build();
                 enemy.transform.SetParent(transform);
-                enemy.OnDeath += () => enemies.Remove(enemy);
+                enemy.OnDeath += () =>
+                {
+                    enemyPools[key].Enqueue(enemy);
+                    enemies.Remove(enemy);
+                };
                 enemy.OnArrive += () =>
                 {
+                    enemyPools[key].Enqueue(enemy);
                     enemies.Remove(enemy);
                     dataContext.userData.saveData.life -= 1;
                 };
@@ -128,7 +134,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < data.count; i++)
         {
             enemylist[i].gameObject.SetActive(true);
-            enemylist[i].Init(saveData.wave % maxWave + 1);
+            enemylist[i].Appeare((saveData.wave / maxWave) + 1);
             yield return delay;
         }
     }

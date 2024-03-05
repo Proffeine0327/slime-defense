@@ -32,14 +32,27 @@ public partial class Slime
             {
                 if (Vector3.Distance(slime.transform.position, target.transform.position) > slime.curStats.GetStat(Stats.Key.AttackRange) + 0.25f)
                     target = null;
+                else if(target.IsDisabled)
+                    target = null;
                 else
                     return true;
             }
             
-            var enemies = GetEnemiesInRange();
-            if (enemies.Length == 0) return false;
-            target = enemies.Select(e => e.GetComponent<Enemy>()).OrderByDescending(e => e.Distance).First();
-            return true;
+            return TryFindNewEnemy();
+        }
+
+        public bool TryFindNewEnemy()
+        {
+            var colliders = GetEnemiesInRange();
+            if (colliders.Length == 0) return false;
+            var enemies = colliders
+                .Select(e => e.GetComponent<Enemy>())
+                .Where(e => !e.IsDisabled)
+                .OrderByDescending(e => e.Distance)
+                .ToArray();
+            if(enemies.Length == 0) return false;
+            target = enemies.First();
+            return true;            
         }
     }
 }

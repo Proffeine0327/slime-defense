@@ -18,21 +18,26 @@ public partial class Enemy : UnitBase
     public event Action OnDeath;
     public event Action OnArrive;
 
-    protected override void Start()
+    protected override void Initialize()
     {
-        base.Start();
+        base.Initialize();
+
+        animator = new(this);
 
         curStats.OnStatChanged += (key, pre, cur) =>
         {
             if (key != Stats.Key.Hp) return;
             Debug.Log($"Damaged {pre - cur}");
         };
+        IsDisabled = true;
     }
 
-    public void Init(int lv)
+    public void Appeare(int lv)
     {
+        Debug.Log($"lv: {lv}");
         maxStats.ChangeFrom(BaseStats);
         effects.AddOrChange("EnemyUpgrade", new EnemyUpgradeEffect() { key = key, lv = lv });
+        curStats.ChangeFrom(maxStats);
         StartCoroutine(MovePath(0));
     }
 
@@ -46,21 +51,27 @@ public partial class Enemy : UnitBase
         if (!IsDisabled && curStats.GetStat(Stats.Key.Hp) <= 0)
         {
             IsDisabled = true;
+            animator.PlayDeath();
             OnDeath?.Invoke();
+            this.Invoke(() =>
+            {
+                if(IsDisabled)
+                    gameObject.SetActive(false);
+            }, 3f);
         }
     }
 
     private IEnumerator MovePath(int pathIndex)
     {
-        yield return null;
-        curStats.ModifyStat(Stats.Key.Hp, x => maxStats.GetStat(Stats.Key.Hp));
-        IsDisabled = false;
+        animator.PlayMove();
 
         var path = paths.GetPath(pathIndex);
+        transform.position = path.GetPathPoint(pathIndex);
+
+        yield return new WaitForSeconds(0.5f);
+
+        IsDisabled = false;
         var targetIndex = 1;
-
-        transform.position = path.GetPathPoint(0);
-
         while (path.MaxPointCount > targetIndex)
         {
             if (IsDisabled) yield break;
@@ -83,6 +94,7 @@ public partial class Enemy : UnitBase
         }
 
         IsDisabled = true;
+        gameObject.SetActive(false);
         OnArrive?.Invoke();
     }
 }

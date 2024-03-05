@@ -20,6 +20,7 @@ public partial class Enemy
             var enemy = Instantiate(resourceLoader.enemyPrefabs[key]);
             enemy.key = key;
             enemy.skill = SkillBase.GetSkill(skill, enemy);
+            enemy.Initialize();
             return enemy;
         }
     }
