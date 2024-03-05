@@ -22,6 +22,6 @@ public class SelectStatValueDisplayer : MonoBehaviour
     private void Update()
     {
         if (target != null)
-            text.text = target.DisplayStat.GetStat(key).ToString("#,###.##");
+            text.text = target.DisplayStat.GetStat(key).ToString("#,##0.##");
     }
 }
