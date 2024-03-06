@@ -101,7 +101,10 @@ namespace Game.Services
             var stageRows = split[1].Split(',');
             var newStageData = new StageData
             {
-                startMoney = int.Parse(stageRows[0])
+                name = stageRows[0],
+                explain = stageRows[1],
+                startMoney = int.Parse(stageRows[2]),
+                gainMoney = int.Parse(stageRows[3])
             };
 
             var waveRows = split[4..];
@@ -129,6 +132,8 @@ namespace Game.Services
             return newStageData;
         }
 
+        public string name;
+        public string explain;
         public int startMoney;
         public int gainMoney;
         public List<WaveData> waveDatas = new();

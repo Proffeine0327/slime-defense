@@ -6,16 +6,9 @@ namespace Game.LobbyScene
 {
     public class CameraMover : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+        [SerializeField] private Vector3 stageSelectedPosition;
+        [SerializeField] private Vector3 stageSelectedRotation;
+        [SerializeField] private Vector3 stageUnselectedPosition;
+        [SerializeField] private Vector3 stageUnselectedRotation;
     }
 }

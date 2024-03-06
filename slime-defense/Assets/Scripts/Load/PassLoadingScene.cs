@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PassLoadingScene : MonoBehaviour
+namespace Game.LoadScene
 {
-    //service
-    private TaskWaiter taskWaiter => ServiceProvider.Get<TaskWaiter>();
-
-    private void Update()
+    public class PassLoadingScene : MonoBehaviour
     {
-        if(taskWaiter.IsEndLoad)
+        //service
+        private TaskWaiter taskWaiter => ServiceProvider.Get<TaskWaiter>();
+
+        private void Update()
         {
-            SceneManager.LoadScene("development");
+            if (taskWaiter.IsEndLoad)
+            {
+                SceneManager.LoadScene("development");
+            }
         }
     }
 }
