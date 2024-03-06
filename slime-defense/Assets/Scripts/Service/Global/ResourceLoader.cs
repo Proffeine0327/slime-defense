@@ -1,32 +1,36 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Game.GameScene;
 
-public class ResourceLoader : MonoBehaviour
+namespace Game.Services
 {
-    public Material gridDefaultMaterial;
-    public Material gridPlaceableMaterial;
-    public Material gridUnplaceableMaterial;
-    public Dictionary<string, Slime> slimePrefabs = new();
-    public Dictionary<string, Enemy> enemyPrefabs = new();
-    public Dictionary<string, Sprite> slimeIcons = new();
-    public Dictionary<string, Sprite> skillIcons = new();
-
-    private void Awake()
+    public class ResourceLoader : MonoBehaviour
     {
-        ServiceProvider.Register(this, true);
+        public Material gridDefaultMaterial;
+        public Material gridPlaceableMaterial;
+        public Material gridUnplaceableMaterial;
+        public Dictionary<string, Slime> slimePrefabs = new();
+        public Dictionary<string, Enemy> enemyPrefabs = new();
+        public Dictionary<string, Sprite> slimeIcons = new();
+        public Dictionary<string, Sprite> skillIcons = new();
 
-        gridDefaultMaterial = Resources.Load<Material>("Materials/Grid/Default");
-        gridPlaceableMaterial = Resources.Load<Material>("Materials/Grid/Placeable");
-        gridUnplaceableMaterial = Resources.Load<Material>("Materials/Grid/Unplaceable");
+        private void Awake()
+        {
+            ServiceProvider.Register(this, true);
 
-        foreach(var prefab in Resources.LoadAll<Slime>("Prefabs/Slime"))
-            slimePrefabs.Add(prefab.name, prefab);
+            gridDefaultMaterial = Resources.Load<Material>("Materials/Grid/Default");
+            gridPlaceableMaterial = Resources.Load<Material>("Materials/Grid/Placeable");
+            gridUnplaceableMaterial = Resources.Load<Material>("Materials/Grid/Unplaceable");
 
-        foreach(var prefab in Resources.LoadAll<Enemy>("Prefabs/Enemy"))
-            enemyPrefabs.Add(prefab.name, prefab);
-        
-        foreach(var sprite in Resources.LoadAll<Sprite>("Sprites/Slime/Icon"))
-            slimeIcons.Add(sprite.name, sprite);
+            foreach (var prefab in Resources.LoadAll<Slime>("Prefabs/Slime"))
+                slimePrefabs.Add(prefab.name, prefab);
+
+            foreach (var prefab in Resources.LoadAll<Enemy>("Prefabs/Enemy"))
+                enemyPrefabs.Add(prefab.name, prefab);
+
+            foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Slime/Icon"))
+                slimeIcons.Add(sprite.name, sprite);
+        }
     }
 }

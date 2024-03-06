@@ -1,13 +1,16 @@
 using UnityEngine;
 
-public class CameraManager : MonoBehaviour
+namespace Game.Services
 {
-    public Camera mainCamera { get; private set; }
-    
-    private void Awake()
+    public class CameraManager : MonoBehaviour
     {
-        ServiceProvider.Register(this);
+        public Camera mainCamera { get; private set; }
 
-        mainCamera = GetComponent<Camera>();
+        private void Awake()
+        {
+            ServiceProvider.Register(this);
+
+            mainCamera = GetComponent<Camera>();
+        }
     }
 }

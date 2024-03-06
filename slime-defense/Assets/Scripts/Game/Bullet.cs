@@ -3,41 +3,44 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+namespace Game.GameScene
 {
-    private Poolable poolable;
-
-    private Poolable Poolable
+    public class Bullet : MonoBehaviour
     {
-        get
+        private Poolable poolable;
+
+        private Poolable Poolable
         {
-            if(!poolable)
-                poolable = GetComponent<Poolable>();
-            return poolable;
-        }
-    }
-
-    public void Fire(Enemy target, Action<Enemy> onHit)
-    {
-        StopAllCoroutines();
-        StartCoroutine(MoveRoutine(target, onHit));
-    }
-
-    private IEnumerator MoveRoutine(Enemy target, Action<Enemy> onHit)
-    {
-        while (Vector3.Distance(target.transform.position, transform.position) > 0.25f)
-        {
-            if (target.IsDisabled)
+            get
             {
-                Poolable.Pool();
-                yield break;
+                if (!poolable)
+                    poolable = GetComponent<Poolable>();
+                return poolable;
             }
-
-            transform.LookAt(target.transform.position);
-            transform.Translate(transform.forward * 15 * Time.deltaTime, Space.World);
-            yield return null;
         }
-        onHit?.Invoke(target);
-        Poolable.Pool();
+
+        public void Fire(Enemy target, Action<Enemy> onHit)
+        {
+            StopAllCoroutines();
+            StartCoroutine(MoveRoutine(target, onHit));
+        }
+
+        private IEnumerator MoveRoutine(Enemy target, Action<Enemy> onHit)
+        {
+            while (Vector3.Distance(target.transform.position, transform.position) > 0.25f)
+            {
+                if (target.IsDisabled)
+                {
+                    Poolable.Pool();
+                    yield break;
+                }
+
+                transform.LookAt(target.transform.position);
+                transform.Translate(transform.forward * 15 * Time.deltaTime, Space.World);
+                yield return null;
+            }
+            onHit?.Invoke(target);
+            Poolable.Pool();
+        }
     }
 }

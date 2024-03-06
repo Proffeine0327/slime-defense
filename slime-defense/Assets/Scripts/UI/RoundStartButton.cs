@@ -2,17 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Game.Services;
 
-public class RoundStartButton : MonoBehaviour
+namespace Game.UI
 {
-    //services
-    private GameManager gameManager => ServiceProvider.Get<GameManager>();
-
-    private Button button;
-    
-    private void Start()
+    public class RoundStartButton : MonoBehaviour
     {
-        button = GetComponent<Button>();
-        button.onClick.AddListener(() => gameManager.StartWave());
+        //services
+        private GameManager gameManager => ServiceProvider.Get<GameManager>();
+
+        private Button button;
+
+        private void Start()
+        {
+            button = GetComponent<Button>();
+            button.onClick.AddListener(() => gameManager.StartWave());
+        }
     }
 }

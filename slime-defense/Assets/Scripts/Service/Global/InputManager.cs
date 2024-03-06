@@ -1,70 +1,74 @@
 using UnityEngine;
+using Game.Services;
 
-public class InputManager : MonoBehaviour
+namespace Game.Services
 {
-    //services
-    private CameraManager cameraManager => ServiceProvider.Get<CameraManager>();
-
-    [SerializeField] private bool isMobile;
-
-    public Ray TouchRay { get; private set; }
-
-    public bool IsTouchDown { get; private set; }
-    public bool IsTouchUp { get; private set; }
-    public bool IsTouch { get; private set; }
-    public bool IsDragging { get; private set; }
-    public Vector2 TouchBeginPosition { get; private set; }
-    public Vector2 TouchPosition { get; private set; }
-
-    private void Start()
+    public class InputManager : MonoBehaviour
     {
-        ServiceProvider.Register(this);
-    }
+        //services
+        private CameraManager cameraManager => ServiceProvider.Get<CameraManager>();
 
-    private void Update()
-    {
-        if (isMobile)
+        [SerializeField] private bool isMobile;
+
+        public Ray TouchRay { get; private set; }
+
+        public bool IsTouchDown { get; private set; }
+        public bool IsTouchUp { get; private set; }
+        public bool IsTouch { get; private set; }
+        public bool IsDragging { get; private set; }
+        public Vector2 TouchBeginPosition { get; private set; }
+        public Vector2 TouchPosition { get; private set; }
+
+        private void Start()
         {
-            if (IsTouchDown) IsTouchDown = false;
-            if (IsTouchUp) IsTouchUp = false;
+            ServiceProvider.Register(this);
+        }
 
-            if (!IsTouch && Input.touchCount > 0)
+        private void Update()
+        {
+            if (isMobile)
             {
-                TouchBeginPosition = Input.GetTouch(0).position;
-                TouchPosition = Input.GetTouch(0).position;
-                IsTouchDown = true;
-                IsTouch = true;
+                if (IsTouchDown) IsTouchDown = false;
+                if (IsTouchUp) IsTouchUp = false;
+
+                if (!IsTouch && Input.touchCount > 0)
+                {
+                    TouchBeginPosition = Input.GetTouch(0).position;
+                    TouchPosition = Input.GetTouch(0).position;
+                    IsTouchDown = true;
+                    IsTouch = true;
+                }
+
+                if (IsTouch && Input.touchCount == 0)
+                {
+                    IsTouch = false;
+                    IsTouchUp = true;
+                }
+
+                if (IsTouch)
+                {
+                    TouchPosition = Input.GetTouch(0).position;
+                }
+            }
+            else
+            {
+                IsTouchDown = Input.GetMouseButtonDown(0);
+                IsTouch = Input.GetMouseButton(0);
+                IsTouchUp = Input.GetMouseButtonUp(0);
+                TouchPosition = Input.mousePosition;
+                if (IsTouchDown) TouchBeginPosition = Input.mousePosition;
             }
 
-            if (IsTouch && Input.touchCount == 0)
+            if (!IsDragging)
             {
-                IsTouch = false;
-                IsTouchUp = true;
+                if (IsTouch && Vector2.Distance(TouchBeginPosition, TouchPosition) > 10f) IsDragging = true;
+            }
+            else
+            {
+                if (!IsTouch) IsDragging = false;
             }
 
-            if (IsTouch)
-            {
-                TouchPosition = Input.GetTouch(0).position;
-            }
+            TouchRay = cameraManager.mainCamera.ScreenPointToRay(TouchPosition);
         }
-        else
-        {
-            IsTouchDown = Input.GetMouseButtonDown(0);
-            IsTouch = Input.GetMouseButton(0);
-            IsTouchUp = Input.GetMouseButtonUp(0);
-            TouchPosition = Input.mousePosition;
-            if(IsTouchDown) TouchBeginPosition = Input.mousePosition;
-        }
-
-        if(!IsDragging)
-        {
-            if(IsTouch && Vector2.Distance(TouchBeginPosition, TouchPosition) > 10f) IsDragging = true;
-        }
-        else
-        {
-            if(!IsTouch) IsDragging = false;
-        }
-
-        TouchRay = cameraManager.mainCamera.ScreenPointToRay(TouchPosition);
     }
 }

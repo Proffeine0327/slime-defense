@@ -5,44 +5,48 @@ using System.Linq;
 using NaughtyAttributes;
 using UniRx;
 using UnityEngine;
+using Game.Services;
 
-public enum GridType { None, Ground, Road }
-
-public class Grid : MonoBehaviour
+namespace Game.GameScene
 {
-    //service
-    private ResourceLoader resourceLoader => ServiceProvider.Get<ResourceLoader>();
+    public enum GridType { None, Ground, Road }
 
-    [SerializeField] private Vector2Int xy;
-    [SerializeField] private GridType gridType;
-
-    private MeshRenderer meshRenderer;
-
-    public Vector2Int XY => xy;
-    public GridType Type => gridType;
-    public Slime Slime { get; set; }
-
-    public void Init(GridType type, Vector2Int xy)
+    public class Grid : MonoBehaviour
     {
-        this.gridType = type;
-        this.xy = xy;
-    }
+        //service
+        private ResourceLoader resourceLoader => ServiceProvider.Get<ResourceLoader>();
 
-    private void Awake()
-    {
-        meshRenderer = GetComponent<MeshRenderer>();
-    }
+        [SerializeField] private Vector2Int xy;
+        [SerializeField] private GridType gridType;
 
-    public void Display(GridType type)
-    {
-        meshRenderer.sharedMaterial =
-            type == gridType ?
-            resourceLoader.gridPlaceableMaterial :
-            resourceLoader.gridUnplaceableMaterial;
-    }
+        private MeshRenderer meshRenderer;
 
-    public void Hide()
-    {
-        meshRenderer.sharedMaterial = resourceLoader.gridDefaultMaterial;
+        public Vector2Int XY => xy;
+        public GridType Type => gridType;
+        public Slime Slime { get; set; }
+
+        public void Init(GridType type, Vector2Int xy)
+        {
+            this.gridType = type;
+            this.xy = xy;
+        }
+
+        private void Awake()
+        {
+            meshRenderer = GetComponent<MeshRenderer>();
+        }
+
+        public void Display(GridType type)
+        {
+            meshRenderer.sharedMaterial =
+                type == gridType ?
+                resourceLoader.gridPlaceableMaterial :
+                resourceLoader.gridUnplaceableMaterial;
+        }
+
+        public void Hide()
+        {
+            meshRenderer.sharedMaterial = resourceLoader.gridDefaultMaterial;
+        }
     }
 }

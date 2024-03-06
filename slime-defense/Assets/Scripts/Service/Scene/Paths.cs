@@ -1,15 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Game.GameScene;
 
-public class Paths : MonoBehaviour
+namespace Game.Services
 {
-    [SerializeField] private Path[] paths;
-
-    public Path GetPath(int pathIndex) => paths[pathIndex];
-
-    private void Awake()
+    public class Paths : MonoBehaviour
     {
-        ServiceProvider.Register(this);
+        [SerializeField] private Path[] paths;
+
+        public Path GetPath(int pathIndex) => paths[pathIndex];
+
+        private void Awake()
+        {
+            ServiceProvider.Register(this);
+        }
     }
 }

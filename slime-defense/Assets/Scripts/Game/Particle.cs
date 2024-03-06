@@ -2,29 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Particle : MonoBehaviour
+namespace Game.GameScene
 {
-    private ParticleSystem p;
-    private Poolable poolable;
-
-    private Poolable Poolable
+    public class Particle : MonoBehaviour
     {
-        get
+        private ParticleSystem p;
+        private Poolable poolable;
+
+        private Poolable Poolable
         {
-            if(poolable == null)
-                poolable = GetComponent<Poolable>();
-            return poolable;
+            get
+            {
+                if (poolable == null)
+                    poolable = GetComponent<Poolable>();
+                return poolable;
+            }
         }
-    }
 
-    private void Awake()
-    {
-        p = GetComponent<ParticleSystem>();
-    }
+        private void Awake()
+        {
+            p = GetComponent<ParticleSystem>();
+        }
 
-    public void Play()
-    {
-        p.Play();
-        this.Invoke(() => Poolable.Pool(), p.main.duration);
+        public void Play()
+        {
+            p.Play();
+            this.Invoke(() => Poolable.Pool(), p.main.duration);
+        }
     }
 }

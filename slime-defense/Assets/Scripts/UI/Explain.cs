@@ -2,17 +2,20 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Explain : Popup
+namespace Game.UI
 {
-    [SerializeField] private Image icon;
-    [SerializeField] private TextMeshProUGUI title;
-    [SerializeField] private TextMeshProUGUI explain;
-
-    public void Display(Sprite icon, string title, string explain)
+    public class Explain : Popup
     {
-        this.icon.sprite = icon;
-        this.title.text = title;
-        this.explain.text = explain;
-        Display();
+        [SerializeField] private Image icon;
+        [SerializeField] private TextMeshProUGUI title;
+        [SerializeField] private TextMeshProUGUI explain;
+
+        public void Display(Sprite icon, string title, string explain)
+        {
+            this.icon.sprite = icon;
+            this.title.text = title;
+            this.explain.text = explain;
+            Display();
+        }
     }
 }

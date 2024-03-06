@@ -1,20 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using Game.Services;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SelectIconChanger : MonoBehaviour
+namespace Game.UI
 {
-    //services
-    private SelectManager selectManager => ServiceProvider.Get<SelectManager>();
-
-    private void Start()
+    public class SelectIconChanger : MonoBehaviour
     {
-        var image = GetComponent<Image>();
-        selectManager.OnSelect += select =>
+        //services
+        private SelectManager selectManager => ServiceProvider.Get<SelectManager>();
+
+        private void Start()
         {
-            if(select != null)
-                image.sprite = select.Icon;
-        };
+            var image = GetComponent<Image>();
+            selectManager.OnSelect += select =>
+            {
+                if (select != null)
+                    image.sprite = select.Icon;
+            };
+        }
     }
 }

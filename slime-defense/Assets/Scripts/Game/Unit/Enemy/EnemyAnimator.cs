@@ -1,25 +1,28 @@
-public partial class Enemy
+namespace Game.GameScene
 {
-    public class Animator
+    public partial class Enemy
     {
-        private readonly Enemy enemy;
-
-        private UnityEngine.Animator animator;
-
-        public void PlayMove()
+        public class Animator
         {
-            animator.Play("move");
-        }
+            private readonly Enemy enemy;
 
-        public void PlayDeath()
-        {
-            animator.Play("death");
-        }
+            private UnityEngine.Animator animator;
 
-        public Animator(Enemy enemy)
-        {
-            this.enemy = enemy;
-            animator = enemy.GetComponent<UnityEngine.Animator>();
+            public void PlayMove()
+            {
+                animator.Play("move");
+            }
+
+            public void PlayDeath()
+            {
+                animator.Play("death");
+            }
+
+            public Animator(Enemy enemy)
+            {
+                this.enemy = enemy;
+                animator = enemy.GetComponent<UnityEngine.Animator>();
+            }
         }
     }
 }

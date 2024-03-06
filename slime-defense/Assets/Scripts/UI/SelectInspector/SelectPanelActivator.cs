@@ -1,21 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
+using Game.Services;
 using UnityEngine;
 
-public class SelectPanelActivator : MonoBehaviour
+namespace Game.UI
 {
-    //serivce
-    private SelectManager selectManager => ServiceProvider.Get<SelectManager>();
-
-    [SerializeField] private GameObject panel;
-
-    private void Start()
+    public class SelectPanelActivator : MonoBehaviour
     {
-        selectManager.OnSelect += select =>
-        {
-            panel.SetActive(select != null);
-        };
+        //serivce
+        private SelectManager selectManager => ServiceProvider.Get<SelectManager>();
 
-        panel.SetActive(false);
+        [SerializeField] private GameObject panel;
+
+        private void Start()
+        {
+            selectManager.OnSelect += select =>
+            {
+                panel.SetActive(select != null);
+            };
+
+            panel.SetActive(false);
+        }
     }
 }

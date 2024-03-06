@@ -2,8 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using UniRx;
-using System.Linq;
-using Unity.VisualScripting;
+using Game.GameScene;
 
 [CustomEditor(typeof(CubeMap))]
 public class CubeMapEditor : Editor

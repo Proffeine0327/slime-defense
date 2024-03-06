@@ -1,27 +1,31 @@
 using UnityEngine;
+using Game.Services;
 
-public partial class Enemy
+namespace Game.GameScene
 {
-    public class Builder
+    public partial class Enemy
     {
-        //services
-        private ResourceLoader resourceLoader => ServiceProvider.Get<ResourceLoader>();
-
-        public string key;
-        public string skill;
-
-        public Builder(string key)
+        public class Builder
         {
-            this.key = key;
-        }
+            //services
+            private ResourceLoader resourceLoader => ServiceProvider.Get<ResourceLoader>();
 
-        public Enemy Build()
-        {
-            var enemy = Instantiate(resourceLoader.enemyPrefabs[key]);
-            enemy.key = key;
-            enemy.skill = SkillBase.GetSkill(skill, enemy);
-            enemy.Initialize();
-            return enemy;
+            public string key;
+            public string skill;
+
+            public Builder(string key)
+            {
+                this.key = key;
+            }
+
+            public Enemy Build()
+            {
+                var enemy = Instantiate(resourceLoader.enemyPrefabs[key]);
+                enemy.key = key;
+                enemy.skill = SkillBase.GetSkill(skill, enemy);
+                enemy.Initialize();
+                return enemy;
+            }
         }
     }
 }

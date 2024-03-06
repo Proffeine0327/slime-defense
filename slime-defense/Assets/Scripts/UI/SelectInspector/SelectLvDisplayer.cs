@@ -1,23 +1,28 @@
+using Game.Services;
 using TMPro;
 using UnityEngine;
+using Game.GameScene;
 
-public class SelectLvDisplayer : MonoBehaviour
+namespace Game.UI
 {
-    //serivce
-    private SelectManager selectManager => ServiceProvider.Get<SelectManager>();
-
-    private ISelectable target;
-    private TextMeshProUGUI text;
-    
-    private void Start()
+    public class SelectLvDisplayer : MonoBehaviour
     {
-        text = GetComponent<TextMeshProUGUI>();
-        selectManager.OnSelect += select => target = select;
-    }
+        //serivce
+        private SelectManager selectManager => ServiceProvider.Get<SelectManager>();
 
-    private void Update()
-    {
-        if(target != null)
-            text.text = $"Lv. {target.Lv}";
+        private ISelectable target;
+        private TextMeshProUGUI text;
+
+        private void Start()
+        {
+            text = GetComponent<TextMeshProUGUI>();
+            selectManager.OnSelect += select => target = select;
+        }
+
+        private void Update()
+        {
+            if (target != null)
+                text.text = $"Lv. {target.Lv}";
+        }
     }
 }

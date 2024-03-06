@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 using System.Linq;
+using Game.GameScene;
 
 #if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
-using UnityEditorInternal;
-
 
 public class GridSettingEditorWindow : EditorWindow
 {

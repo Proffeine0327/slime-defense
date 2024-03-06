@@ -1,33 +1,36 @@
 using System.Collections;
 
-public partial class Slime
+namespace Game.GameScene
 {
-    public class Animator
+    public partial class Slime
     {
-        private Slime slime;
-        private UnityEngine.Animator animator;
-
-        public Animator(Slime slime)
+        public class Animator
         {
-            this.slime = slime;
-            animator = slime.GetComponent<UnityEngine.Animator>();
-        }
+            private Slime slime;
+            private UnityEngine.Animator animator;
 
-        public void PlayLookAround()
-        {
-            animator.SetTrigger("lookaround");
-        }
-
-        public void PlayAttack(string name)
-        {
-            slime.StartCoroutine(Routine(name));
-            IEnumerator Routine(string name)
+            public Animator(Slime slime)
             {
-                animator.Play(name);
-                yield return null;
-                var clip = animator.GetCurrentAnimatorClipInfo(0)[0];
-                var ratio = clip.clip.length / slime.maxStats.GetStat(Stats.Key.AttackDelay);
-                animator.SetFloat("atkspeed", ratio);
+                this.slime = slime;
+                animator = slime.GetComponent<UnityEngine.Animator>();
+            }
+
+            public void PlayLookAround()
+            {
+                animator.SetTrigger("lookaround");
+            }
+
+            public void PlayAttack(string name)
+            {
+                slime.StartCoroutine(Routine(name));
+                IEnumerator Routine(string name)
+                {
+                    animator.Play(name);
+                    yield return null;
+                    var clip = animator.GetCurrentAnimatorClipInfo(0)[0];
+                    var ratio = clip.clip.length / slime.maxStats.GetStat(Stats.Key.AttackDelay);
+                    animator.SetFloat("atkspeed", ratio);
+                }
             }
         }
     }

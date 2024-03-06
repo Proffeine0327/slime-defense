@@ -1,9 +1,12 @@
 using UnityEngine;
 
-public class CanvasManager : MonoBehaviour
+namespace Game.Services
 {
-    private void Awake()
+    public class CanvasManager : MonoBehaviour
     {
-        ServiceProvider.Register(this);
+        private void Awake()
+        {
+            ServiceProvider.Register(this);
+        }
     }
 }

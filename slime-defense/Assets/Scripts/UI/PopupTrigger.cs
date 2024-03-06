@@ -1,57 +1,61 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Game.Services;
 
-public class PopupTrigger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+namespace Game.UI
 {
-    private CanvasManager canvasManager => ServiceProvider.Get<CanvasManager>();
-
-    [SerializeField] protected Popup popup;
-    [SerializeField] protected bool changeLayer;
-    protected Image image;
-    protected Transform popupParent;
-
-    public Image Image { get { if (!image) image = GetComponent<Image>(); return image; } }
-    public Popup PopupWindow => popup;
-    public event System.Action<bool> OnChangeState;
-
-    private void Start()
+    public class PopupTrigger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
-        popupParent = popup?.transform.parent;
-        popup?.Hide();
-    }
+        private CanvasManager canvasManager => ServiceProvider.Get<CanvasManager>();
 
-    public virtual void SetPopup(Popup popup)
-    {
-        if (!popup) return;
-        popupParent = popup.transform.parent;
-        this.popup = popup;
-    }
+        [SerializeField] protected Popup popup;
+        [SerializeField] protected bool changeLayer;
+        protected Image image;
+        protected Transform popupParent;
 
-    private void OnDestroy()
-    {
-        if (popup) Destroy(popup);
-    }
+        public Image Image { get { if (!image) image = GetComponent<Image>(); return image; } }
+        public Popup PopupWindow => popup;
+        public event System.Action<bool> OnChangeState;
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        OnChangeState?.Invoke(true);
-        if (popup)
+        private void Start()
         {
-            // if(changeLayer)
-            //     popup.transform.SetParent(canvasManager.GetLayer(1).transform);
-            popup.Display();
+            popupParent = popup?.transform.parent;
+            popup?.Hide();
         }
-    }
 
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        OnChangeState?.Invoke(false);
-        if (popup)
+        public virtual void SetPopup(Popup popup)
         {
-            // if(changeLayer)
-            //     popup.transform.SetParent(popupParent);
-            popup.Hide();
+            if (!popup) return;
+            popupParent = popup.transform.parent;
+            this.popup = popup;
+        }
+
+        private void OnDestroy()
+        {
+            if (popup) Destroy(popup);
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            OnChangeState?.Invoke(true);
+            if (popup)
+            {
+                // if(changeLayer)
+                //     popup.transform.SetParent(canvasManager.GetLayer(1).transform);
+                popup.Display();
+            }
+        }
+
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            OnChangeState?.Invoke(false);
+            if (popup)
+            {
+                // if(changeLayer)
+                //     popup.transform.SetParent(popupParent);
+                popup.Hide();
+            }
         }
     }
 }

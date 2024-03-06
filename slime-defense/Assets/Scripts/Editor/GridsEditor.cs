@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Game.GameScene;
 
 #if UNITY_EDITOR
 using UnityEngine;
@@ -44,7 +45,7 @@ public class GridsEditor : Editor
                         obj.AddComponent<BoxCollider>();
                         obj.layer = LayerMask.NameToLayer("Grid");
 
-                        var gridplane = obj.AddComponent<Grid>();
+                        var gridplane = obj.AddComponent<Game.GameScene.Grid>();
                         gridplane.Init((GridType)states[y, x], new Vector2Int(x, y));
 
                         cols[y].Grids.Add(gridplane);

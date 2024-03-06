@@ -107,9 +107,9 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
-    - _BendDelta: 0.15
+    - _BendDelta: 0.963
     - _BladeBendCurve: 4
-    - _BladeBendDistance: 0.39
+    - _BladeBendDistance: 0.56
     - _BladeCurve: 2
     - _BladeForward: 0.38
     - _BladeHeight: 0.25
@@ -149,7 +149,7 @@ Material:
     - _TesselationFactor: 4
     - _TessellationEdgeLength: 0.25
     - _TessellationFactor: 4
-    - _TessellationGrassDistance: 0.075
+    - _TessellationGrassDistance: 0.06
     - _WindFrequency: 0.0125
     - _WindStrength: 0.5
     - _WorkflowMode: 1

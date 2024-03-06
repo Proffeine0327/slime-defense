@@ -3,113 +3,129 @@ using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Game.Services;
 
-public partial class Slime : UnitBase, ISelectable, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+namespace Game.GameScene
 {
-    //services
-    private SlimeManager slimeManager => ServiceProvider.Get<SlimeManager>();
-    private SelectManager selectManager => ServiceProvider.Get<SelectManager>();
-    private GameManager gameManager => ServiceProvider.Get<GameManager>();
-    private InputManager inputManager => ServiceProvider.Get<InputManager>();
-    private DataContext dataContext => ServiceProvider.Get<DataContext>();
-    private ResourceLoader resourceLoader => ServiceProvider.Get<ResourceLoader>();
-    private ObjectPool objectPool => ServiceProvider.Get<ObjectPool>();
-    private Grids grids => ServiceProvider.Get<Grids>();
-
-    //field
-    private bool isPreview;
-    private bool isLook;
-    private bool isDragging;
-    private string slimeKey;
-    private ReactiveProperty<int> lv = new();
-    private Vector2Int xy;
-    private Animator animator;
-    private Attacker attacker;
-    private RangeDisplayer rangeDisplayer;
-
-    //property
-    private SlimeData SlimeData => dataContext.slimeDatas[slimeKey];
-    private bool IsSelected => ReferenceEquals(this, selectManager.CurrentSelect);
-
-    protected override Stats BaseStats => SlimeData.stats[lv.Value - 1];
-
-    public int Lv => lv.Value;
-    public Stats DisplayStat => maxStats;
-    public Sprite Icon => resourceLoader.slimeIcons.GetValueOrDefault(slimeKey);
-    public string SlimeKey => slimeKey;
-    public bool IsMaxLv => dataContext.gameData.maxLv == lv.Value;
-    public bool IsRemovable => true;
-    public int RemoveCost => SlimeData.cost * (int)Mathf.Pow(2, lv.Value - 1);
-    public string RemoveExplain => $"판매: {RemoveCost}";
-
-    //method
-    protected override void Initialize()
+    public partial class Slime : UnitBase, ISelectable, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        base.Initialize();
-        Debug.Log("Slime Start");
+        //services
+        private SlimeManager slimeManager => ServiceProvider.Get<SlimeManager>();
+        private SelectManager selectManager => ServiceProvider.Get<SelectManager>();
+        private GameManager gameManager => ServiceProvider.Get<GameManager>();
+        private InputManager inputManager => ServiceProvider.Get<InputManager>();
+        private DataContext dataContext => ServiceProvider.Get<DataContext>();
+        private ResourceLoader resourceLoader => ServiceProvider.Get<ResourceLoader>();
+        private ObjectPool objectPool => ServiceProvider.Get<ObjectPool>();
+        private Grids grids => ServiceProvider.Get<Grids>();
 
-        animator = new(this);
-        attacker = new(this);
+        //field
+        private bool isPreview;
+        private bool isLook;
+        private bool isDragging;
+        private string slimeKey;
+        private ReactiveProperty<int> lv = new();
+        private Vector2Int xy;
+        private Animator animator;
+        private Attacker attacker;
+        private RangeDisplayer rangeDisplayer;
 
-        rangeDisplayer = GetComponentInChildren<RangeDisplayer>(true);
+        //property
+        private SlimeData SlimeData => dataContext.slimeDatas[slimeKey];
+        private bool IsSelected => ReferenceEquals(this, selectManager.CurrentSelect);
 
-        curStats.OnStatChanged += (key, pre, cur) =>
+        protected override Stats BaseStats => SlimeData.stats[lv.Value - 1];
+
+        public int Lv => lv.Value;
+        public Stats DisplayStat => maxStats;
+        public Sprite Icon => resourceLoader.slimeIcons.GetValueOrDefault(slimeKey);
+        public string SlimeKey => slimeKey;
+        public bool IsMaxLv => dataContext.gameData.maxLv == lv.Value;
+        public bool IsRemovable => true;
+        public int RemoveCost => SlimeData.cost * (int)Mathf.Pow(2, lv.Value - 1);
+        public string RemoveExplain => $"판매: {RemoveCost}";
+
+        //method
+        protected override void Initialize()
         {
-            if (key != Stats.Key.AttackRange) return;
-            rangeDisplayer.SetRange(curStats.GetStat(key));
-        };
-        lv.Subscribe(x =>
-        {
-            if(x <= 0) return;
-            modifier.CalculateAll(maxStats, BaseStats);
-            Debug.Log(curStats.ToString());
-        });
-    }
+            base.Initialize();
+            Debug.Log("Slime Start");
 
-    private void Update()
-    {
-        if (isPreview)
-        {
-            rangeDisplayer.Active(true);
-            return;
-        }
+            animator = new(this);
+            attacker = new(this);
 
-        rangeDisplayer.Active(IsSelected || isDragging);
-        if (!gameManager.IsWaveStart) return;
+            rangeDisplayer = GetComponentInChildren<RangeDisplayer>(true);
 
-        if (isLook) LookEnemy(attacker.Target);
-
-        if (curStats.GetStat(Stats.Key.AttackDelay) < maxStats.GetStat(Stats.Key.AttackDelay))
-        {
-            curStats.ModifyStat(Stats.Key.AttackDelay, x => x + Time.deltaTime);
-        }
-        else
-        {
-            if (attacker.HasTarget())
+            curStats.OnStatChanged += (key, pre, cur) =>
             {
-                isLook = true;
-                animator.PlayAttack(SlimeData.atkAnimKey);
-                curStats.ModifyStat(Stats.Key.AttackDelay, x => 0);
+                if (key != Stats.Key.AttackRange) return;
+                rangeDisplayer.SetRange(curStats.GetStat(key));
+            };
+            lv.Subscribe(x =>
+            {
+                if (x <= 0) return;
+                modifier.CalculateAll(maxStats, BaseStats);
+                Debug.Log(curStats.ToString());
+            });
+        }
+
+        private void Update()
+        {
+            if (isPreview)
+            {
+                rangeDisplayer.Active(true);
+                return;
+            }
+
+            rangeDisplayer.Active(IsSelected || isDragging);
+            if (!gameManager.IsWaveStart) return;
+
+            if (isLook) LookEnemy(attacker.Target);
+
+            if (curStats.GetStat(Stats.Key.AttackDelay) < maxStats.GetStat(Stats.Key.AttackDelay))
+            {
+                curStats.ModifyStat(Stats.Key.AttackDelay, x => x + Time.deltaTime);
+            }
+            else
+            {
+                if (attacker.HasTarget())
+                {
+                    isLook = true;
+                    animator.PlayAttack(SlimeData.atkAnimKey);
+                    curStats.ModifyStat(Stats.Key.AttackDelay, x => 0);
+                }
             }
         }
-    }
 
-    public void LevelUp()
-    {
-        lv.Value++;
-        Debug.Log(lv.Value);
-    }
-
-    public void Attack()
-    {
-        isLook = false;
-        if (!string.IsNullOrEmpty(SlimeData.bulletKey))
+        public void LevelUp()
         {
-            var bullet = objectPool.GetObject(SlimeData.bulletKey);
-            bullet.transform.position = transform.position;
-            bullet.GetComponent<Bullet>().Fire(attacker.Target, target =>
+            lv.Value++;
+            Debug.Log(lv.Value);
+        }
+
+        public void Attack()
+        {
+            isLook = false;
+            if (!string.IsNullOrEmpty(SlimeData.bulletKey))
             {
-                skill.OnAttack(target);
+                var bullet = objectPool.GetObject(SlimeData.bulletKey);
+                bullet.transform.position = transform.position;
+                bullet.GetComponent<Bullet>().Fire(attacker.Target, target =>
+                {
+                    skill.OnAttack(target);
+                    objectPool
+                        .GetObject
+                        (
+                            SlimeData.atkParticleKey,
+                            attacker.Target.transform.position + Vector3.up * 0.5f
+                        )
+                        .GetComponent<Particle>()
+                        .Play();
+                });
+            }
+            else
+            {
+                skill.OnAttack(attacker.Target);
                 objectPool
                     .GetObject
                     (
@@ -118,86 +134,74 @@ public partial class Slime : UnitBase, ISelectable, IPointerClickHandler, IBegin
                     )
                     .GetComponent<Particle>()
                     .Play();
-            });
+            }
         }
-        else
+
+        public void LookEnemy(Enemy enemy)
         {
-            skill.OnAttack(attacker.Target);
-            objectPool
-                .GetObject
-                (
-                    SlimeData.atkParticleKey,
-                    attacker.Target.transform.position + Vector3.up * 0.5f
-                )
-                .GetComponent<Particle>()
-                .Play();
+            var diff = enemy.transform.position - transform.position;
+            var rotate = Mathf.Atan2(diff.x, diff.z) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, rotate, 0);
         }
-    }
 
-    public void LookEnemy(Enemy enemy)
-    {
-        var diff = enemy.transform.position - transform.position;
-        var rotate = Mathf.Atan2(diff.x, diff.z) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, rotate, 0);
-    }
-
-    public void MoveTo(Vector2Int to)
-    {
-        xy = to;
-        transform.position = grids.ToPos(to);
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (eventData.dragging) return;
-        selectManager.Select(this);
-    }
-
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        if (gameManager.IsWaveStart) return;
-
-        isDragging = true;
-        selectManager.Select(null);
-        grids.DisplayGrids(SlimeData.grid);
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        if (gameManager.IsWaveStart) return;
-
-        var plane = new Plane(Vector3.down, Vector3.zero);
-        if (plane.Raycast(inputManager.TouchRay, out var dist))
+        public void MoveTo(Vector2Int to)
         {
-            var hitPoint = inputManager.TouchRay.GetPoint(dist);
-            if (grids.PosInGrid(hitPoint)) transform.position = grids.Snap(hitPoint);
-            else transform.position = hitPoint;
+            xy = to;
+            transform.position = grids.ToPos(to);
         }
-    }
 
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        if (gameManager.IsWaveStart) return;
-
-        if (grids.PosInGrid(transform.position))
+        public void OnPointerClick(PointerEventData eventData)
         {
-            var movedIndex = grids.ToIndex(transform.position);
-
-            if (slimeManager.MoveSlime(xy, movedIndex)) MoveTo(movedIndex);
-            else MoveTo(xy);
+            if (eventData.dragging) return;
+            selectManager.Select(this);
         }
-        else
+
+        public void OnBeginDrag(PointerEventData eventData)
         {
-            MoveTo(xy);
+            if (gameManager.IsWaveStart) return;
+
+            isDragging = true;
+            selectManager.Select(null);
+            grids.DisplayGrids(SlimeData.grid);
         }
 
-        isDragging = false;
-        grids.HideAllGrids();
-        selectManager.Select(this);
-    }
+        public void OnDrag(PointerEventData eventData)
+        {
+            if (gameManager.IsWaveStart) return;
 
-    public void OnRemove()
-    {
-        slimeManager.SellSlime(xy);
+            var plane = new Plane(Vector3.down, Vector3.zero);
+            if (plane.Raycast(inputManager.TouchRay, out var dist))
+            {
+                var hitPoint = inputManager.TouchRay.GetPoint(dist);
+                if (grids.PosInGrid(hitPoint)) transform.position = grids.Snap(hitPoint);
+                else transform.position = hitPoint;
+            }
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            if (gameManager.IsWaveStart) return;
+
+            if (grids.PosInGrid(transform.position))
+            {
+                var movedIndex = grids.ToIndex(transform.position);
+
+                if (slimeManager.MoveSlime(xy, movedIndex)) MoveTo(movedIndex);
+                else MoveTo(xy);
+            }
+            else
+            {
+                MoveTo(xy);
+            }
+
+            isDragging = false;
+            grids.HideAllGrids();
+            selectManager.Select(this);
+        }
+
+        public void OnRemove()
+        {
+            slimeManager.SellSlime(xy);
+        }
     }
 }
