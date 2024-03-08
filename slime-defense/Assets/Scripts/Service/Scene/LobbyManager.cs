@@ -7,14 +7,24 @@ namespace Game.Services
         //Services
         private DataContext dataContext => ServiceProvider.Get<DataContext>();
 
-        public void SelectStage(int index)
+        private int stage;
+
+        public int Stage
         {
-            
+            get => stage;
+            set
+            {
+                stage = Mathf.Clamp(value, 0, dataContext.stageDatas.Count);
+            }
         }
+        public bool IsSelectedStage { get; set; }
+        public StageData StageData => dataContext.stageDatas[Stage];
 
         private void Awake()
         {
             ServiceProvider.Register(this);
+
+            IsSelectedStage = true;
         }
     }
 }

@@ -7,10 +7,9 @@ namespace Game.UI
 {
     public class PopupTrigger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
-        private CanvasManager canvasManager => ServiceProvider.Get<CanvasManager>();
-
         [SerializeField] protected Popup popup;
         [SerializeField] protected bool changeLayer;
+        
         protected Image image;
         protected Transform popupParent;
 

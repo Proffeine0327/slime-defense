@@ -14,7 +14,7 @@ namespace Game.LoadScene
         {
             if (taskWaiter.IsEndLoad)
             {
-                SceneManager.LoadScene("development");
+                SceneManager.LoadScene("Lobby");
             }
         }
     }

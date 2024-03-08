@@ -161,6 +161,13 @@ namespace Game.Services
     [Serializable]
     public class UserData
     {
+        // public static UserData Load()
+        // {
+        //     var json = PlayerPrefs.GetString("userdata");
+        //     var userdata = JsonUtility.FromJson<UserData>(json);
+        //     userdata
+        // }
+
         public int hp = 999;
         public int money;
         public string[] deck;

@@ -12,14 +12,14 @@ namespace Game.Services
         private TaskWaiter taskWaiter => ServiceProvider.Get<TaskWaiter>();
 
         //csv data
-        public GameData gameData = new();
-        public Dictionary<string, SlimeData> slimeDatas = new();
-        public Dictionary<string, EnemyData> enemyDatas = new();
-        public Dictionary<Tier, TierData> tierDatas = new();
-        public List<StageData> stageDatas = new();
+        [NonSerialized] public GameData gameData = new();
+        [NonSerialized] public Dictionary<string, SlimeData> slimeDatas = new();
+        [NonSerialized] public Dictionary<string, EnemyData> enemyDatas = new();
+        [NonSerialized] public Dictionary<Tier, TierData> tierDatas = new();
+        [NonSerialized] public List<StageData> stageDatas = new();
 
         //user data
-        public UserData userData = new();
+        [NonSerialized] public UserData userData = new();
 
         private void Start()
         {
