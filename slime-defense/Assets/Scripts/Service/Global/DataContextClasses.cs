@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Game.GameScene;
+using System.Linq;
 
 namespace Game.Services
 {
@@ -12,7 +13,7 @@ namespace Game.Services
         {
             var count = 0;
             var data = new SlimeData();
-            var split = row.Split(',');
+            var split = row.Split('\t');
             data.slimeKey = split[count++];
             data.name = split[count++];
             data.tier = Enum.Parse<Tier>(split[count++]);
@@ -55,34 +56,34 @@ namespace Game.Services
     }
     public class EnemyData
     {
+        public string key;
+        public string name;
+        public string explain;
+        public string skillKey;
+        public Stats @base = new();
+        public Stats percentage = new();
+        public Stats add = new();
+
         public static EnemyData Parse(string row)
         {
             var count = 0;
-            var split = row.Split(',');
+            var split = row.Split('\t');
             var data = new EnemyData();
             data.key = split[count++];
             data.name = split[count++];
-            data.baseStat.AddStat(Stats.Key.Hp, float.Parse(split[count++]));
-            data.baseStat.AddStat(Stats.Key.Speed, float.Parse(split[count++]));
-            data.baseStat.AddStat(Stats.Key.AbilityPower, float.Parse(split[count++]));
-            data.upgradeHpPercentage = float.Parse(split[count++]);
-            data.upgradeHpAdd = float.Parse(split[count++]);
-            data.upgradeSpeedPercentage = float.Parse(split[count++]);
-            data.upgradeSpeedAdd = float.Parse(split[count++]);
-            data.upgradeApPercentage = float.Parse(split[count++]);
-            data.upgradeApAdd = float.Parse(split[count++]);
+            data.explain = split[count++];
+            data.skillKey = split[count++];
+            data.@base.AddStat(Stats.Key.Hp, float.Parse(split[count++]));
+            data.@base.AddStat(Stats.Key.Speed, float.Parse(split[count++]));
+            data.@base.AddStat(Stats.Key.AbilityPower, float.Parse(split[count++]));
+            data.percentage.AddStat(Stats.Key.Hp, float.Parse(split[count++]));
+            data.add.AddStat(Stats.Key.Hp, float.Parse(split[count++]));
+            data.percentage.AddStat(Stats.Key.Speed, float.Parse(split[count++]));
+            data.add.AddStat(Stats.Key.Speed, float.Parse(split[count++]));
+            data.percentage.AddStat(Stats.Key.AbilityPower, float.Parse(split[count++]));
+            data.add.AddStat(Stats.Key.AbilityPower, float.Parse(split[count++]));
             return data;
         }
-
-        public string key;
-        public string name;
-        public Stats baseStat = new();
-        public float upgradeHpPercentage;
-        public float upgradeHpAdd;
-        public float upgradeSpeedPercentage;
-        public float upgradeSpeedAdd;
-        public float upgradeApPercentage;
-        public float upgradeApAdd;
     }
     public class GameData
     {
@@ -98,20 +99,20 @@ namespace Game.Services
         public static StageData Parse(string csv)
         {
             var split = csv.Split('\n');
-            var stageRows = split[1].Split(',');
-            var newStageData = new StageData
-            {
-                name = stageRows[0],
-                explain = stageRows[1],
-                startMoney = int.Parse(stageRows[2]),
-                gainMoney = int.Parse(stageRows[3])
-            };
+            var stageRows = split[1].Split('\t');
+            var newStageData = new StageData();
+            newStageData.name = stageRows[0];
+            newStageData.explain = stageRows[1];
+            newStageData.unlockMoney = int.Parse(stageRows[2]);
+            newStageData.startLife = int.Parse(stageRows[3]);
+            newStageData.startMoney = int.Parse(stageRows[4]);
+            newStageData.gainMoney = int.Parse(stageRows[5]);
 
             var waveRows = split[4..];
             WaveData newWaveData = default;
             foreach (var row in waveRows)
             {
-                var rowSplit = row.Split(',');
+                var rowSplit = row.Split('\t');
                 if (rowSplit[0] != string.Empty)
                 {
                     if (newWaveData != default)
@@ -134,9 +135,23 @@ namespace Game.Services
 
         public string name;
         public string explain;
+        public int unlockMoney;
+        public int startLife;
         public int startMoney;
         public int gainMoney;
         public List<WaveData> waveDatas = new();
+
+        public string[] AllAppeareEnemies
+        {
+            get
+            {
+                var list = new HashSet<string>();
+                foreach(var waveData in waveDatas)
+                    foreach(var spawnData in waveData.spawnDatas)
+                        list.Add(spawnData.key);
+                return list.ToArray();
+            }
+        }
 
         public class WaveData
         {
@@ -161,25 +176,55 @@ namespace Game.Services
     [Serializable]
     public class UserData
     {
-        // public static UserData Load()
-        // {
-        //     var json = PlayerPrefs.GetString("userdata");
-        //     var userdata = JsonUtility.FromJson<UserData>(json);
-        //     userdata
-        // }
-
         public int hp = 999;
         public int money;
         public string[] deck;
-        public bool[] unlockStages;
+        public bool[] unlockStages = new[] { true };
+        public bool[] unlockInfModes = new[] { false };
         public SaveData saveData = new();
+
+        public static UserData Load()
+        {
+            var dataContext = ServiceProvider.Get<DataContext>();
+
+            var json = PlayerPrefs.GetString("userdata");
+            var userdata = JsonUtility.FromJson<UserData>(json) ?? new UserData();
+
+            var adjUnlockStages = Enumerable.Repeat(false, dataContext.stageDatas.Count).ToArray();
+            if(userdata.unlockStages != null)
+                Array.Copy(userdata.unlockStages, adjUnlockStages, Mathf.Min(userdata.unlockStages.Length, adjUnlockStages.Length));
+            userdata.unlockStages = adjUnlockStages;
+
+            var adjUnlockInfModes = Enumerable.Repeat(false, dataContext.stageDatas.Count).ToArray();
+            if(userdata.unlockInfModes != null)
+                Array.Copy(userdata.unlockInfModes, adjUnlockInfModes, Mathf.Min(userdata.unlockInfModes.Length, adjUnlockInfModes.Length));
+            userdata.unlockInfModes = adjUnlockInfModes;
+
+            userdata.money = 10000;
+            
+            return userdata;
+        }
+
+        public void CreateNewSaveData(int stage, bool isInfinity, string[] deck)
+        {
+            var dataContext = ServiceProvider.Get<DataContext>();
+
+            saveData = new SaveData()
+            {
+                stage = stage,
+                isInfinity = isInfinity,
+                deck = deck,
+                money = dataContext.stageDatas[stage].startMoney,
+                life = dataContext.stageDatas[stage].startLife
+            };
+        }
     }
 
     [Serializable]
     public class SaveData
     {
-        public bool isInfinity;
         public int stage;
+        public bool isInfinity;
         public int wave;
         public int money = 10000;
         public int life;
@@ -189,7 +234,6 @@ namespace Game.Services
         public string[] arguments;
         public string[] playerunits;
         public string[] obstacles;
-        public string[] grids;
     }
     #endregion
 }

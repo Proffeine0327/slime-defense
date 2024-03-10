@@ -48,7 +48,6 @@ public class TaskWaiter : MonoBehaviour
 {
     public static TaskWaiter Instance { get; private set; }
 
-    [SerializeField] private Color color;
     private List<TaskData> loadingTasks = new();
 
     public event Action OnLoadComplete;

@@ -14,7 +14,7 @@ namespace Game.GameScene
         private string key;
         private Animator animator;
 
-        protected override Stats BaseStats => dataContext.enemyDatas[key].baseStat;
+        protected override Stats BaseStats => dataContext.enemyDatas[key].@base;
         public bool IsDisabled { get; private set; }
         public float Distance { get; private set; }
 

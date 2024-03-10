@@ -1,30 +1,28 @@
+using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 
 namespace Game.Services
 {
     public class LobbyManager : MonoBehaviour
     {
-        //Services
+        //services
         private DataContext dataContext => ServiceProvider.Get<DataContext>();
 
-        private int stage;
+        //const
+        private float INTERVAL_TIME = 0.5f;
 
-        public int Stage
-        {
-            get => stage;
-            set
-            {
-                stage = Mathf.Clamp(value, 0, dataContext.stageDatas.Count);
-            }
-        }
-        public bool IsSelectedStage { get; set; }
-        public StageData StageData => dataContext.stageDatas[Stage];
+        //member
+        public ReactiveIntervalProperty<int> Stage;
+        public ReactiveIntervalProperty<bool> IsSelectedStage;
+        public StageData StageData => dataContext.stageDatas[Stage.Value];
 
         private void Awake()
         {
             ServiceProvider.Register(this);
 
-            IsSelectedStage = true;
+            Stage = new(this) { Interval = INTERVAL_TIME, Value = 1 };
+            IsSelectedStage = new(this) { Interval = INTERVAL_TIME, Value = true };
         }
     }
 }

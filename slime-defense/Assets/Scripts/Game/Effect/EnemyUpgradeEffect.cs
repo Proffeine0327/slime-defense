@@ -20,22 +20,22 @@ namespace Game.GameScene
             (
                 caster: "EnemyUpgradeHp",
                 key: Stats.Key.Hp,
-                percent: _ => dataContext.enemyDatas[key].upgradeHpPercentage * (lv - 1),
-                add: _ => dataContext.enemyDatas[key].upgradeHpAdd * (lv - 1)
+                percent: _ => dataContext.enemyDatas[key].percentage.GetStat(Stats.Key.Hp) * (lv - 1),
+                add: _ => dataContext.enemyDatas[key].add.GetStat(Stats.Key.Hp) * (lv - 1)
             );
             enemy.modifier.Set
             (
                 caster: "EnemyUpgradeSpeed",
                 key: Stats.Key.Speed,
-                percent: _ => dataContext.enemyDatas[key].upgradeSpeedPercentage * (lv - 1),
-                add: _ => dataContext.enemyDatas[key].upgradeSpeedAdd * (lv - 1)
+                percent: _ => dataContext.enemyDatas[key].percentage.GetStat(Stats.Key.Speed) * (lv - 1),
+                add: _ => dataContext.enemyDatas[key].add.GetStat(Stats.Key.Speed) * (lv - 1)
             );
             enemy.modifier.Set
             (
                 caster: "EnemyUpgradeAp",
                 key: Stats.Key.AbilityPower,
-                percent: _ => dataContext.enemyDatas[key].upgradeApPercentage * (lv - 1),
-                add: _ => dataContext.enemyDatas[key].upgradeApAdd * (lv - 1)
+                percent: _ => dataContext.enemyDatas[key].percentage.GetStat(Stats.Key.AbilityPower) * (lv - 1),
+                add: _ => dataContext.enemyDatas[key].add.GetStat(Stats.Key.AbilityPower) * (lv - 1)
             );
         }
     }

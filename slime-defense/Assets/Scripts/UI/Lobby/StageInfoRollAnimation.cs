@@ -24,8 +24,8 @@ namespace Game.UI.LobbyScene
             openSeq = DOTween
                         .Sequence()
                         .SetAutoKill(false)
-                        .Append(rectTransform.DOAnchorPosX(-450, 0.5f).SetEase(Ease.Unset).SetUpdate(true))
-                        .Append(rectTransform.DOSizeDelta(new Vector2(rectTransform.sizeDelta.x, 820), 0.5f).SetEase(Ease.OutQuart).SetUpdate(true))
+                        .Append(rectTransform.DOAnchorPosX(-450, 0.33f).SetEase(Ease.Unset).SetUpdate(true))
+                        .Append(rectTransform.DOSizeDelta(new Vector2(rectTransform.sizeDelta.x, 820), 0.33f).SetEase(Ease.OutQuart).SetUpdate(true))
                         .Pause();
             closeSeq = DOTween
                         .Sequence()
@@ -35,7 +35,7 @@ namespace Game.UI.LobbyScene
                         .Pause();
 
             lobbyManager
-                .ObserveEveryValueChanged(l => l.IsSelectedStage)
+                .ObserveEveryValueChanged(l => l.IsSelectedStage.Value)
                 .Subscribe(selected =>
                 {
                     if (selected)

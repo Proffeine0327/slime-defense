@@ -21,13 +21,13 @@ namespace Game.LobbyScene
             transform.position = Vector3.Lerp
             (
                 transform.position,
-                lobbyManager.IsSelectedStage ? stageSelectedPosition : stageUnselectedPosition,
+                lobbyManager.IsSelectedStage.Value ? stageSelectedPosition : stageUnselectedPosition,
                 Time.deltaTime * moveSpeed
             );
             transform.eulerAngles = Vector3.Lerp
             (
                 transform.eulerAngles,
-                lobbyManager.IsSelectedStage ? stageSelectedRotation : stageUnselectedRotation,
+                lobbyManager.IsSelectedStage.Value ? stageSelectedRotation : stageUnselectedRotation,
                 Time.deltaTime * moveSpeed  
             );
         }

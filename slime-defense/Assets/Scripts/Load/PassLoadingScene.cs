@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Game.Services;
+using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,13 +11,14 @@ namespace Game.LoadScene
     {
         //service
         private TaskWaiter taskWaiter => ServiceProvider.Get<TaskWaiter>();
+        private ScreenFade screenFade => ServiceProvider.Get<ScreenFade>();
 
-        private void Update()
+        private void Start()
         {
-            if (taskWaiter.IsEndLoad)
-            {
-                SceneManager.LoadScene("Lobby");
-            }
+            taskWaiter
+                .ObserveEveryValueChanged(w => w.IsEndLoad)
+                .Where(b => b == true)
+                .Subscribe(b => screenFade.LoadScene("Lobby").SetImmediately(true));
         }
     }
 }

@@ -86,7 +86,7 @@ namespace UniRx
 #if !UniRxLibrary
         [SerializeField]
 #endif
-        T value = default(T);
+        protected T value = default(T);
 
         [NonSerialized]
         ObserverNode<T> root;
@@ -95,7 +95,7 @@ namespace UniRx
         ObserverNode<T> last;
 
         [NonSerialized]
-        bool isDisposed = false;
+        protected bool isDisposed = false;
 
         protected virtual IEqualityComparer<T> EqualityComparer
         {
@@ -105,7 +105,7 @@ namespace UniRx
             }
         }
 
-        public T Value
+        public virtual T Value
         {
             get
             {
@@ -144,7 +144,7 @@ namespace UniRx
             SetValue(initialValue);
         }
 
-        void RaiseOnNext(ref T value)
+        protected void RaiseOnNext(ref T value)
         {
             var node = root;
             while (node != null)

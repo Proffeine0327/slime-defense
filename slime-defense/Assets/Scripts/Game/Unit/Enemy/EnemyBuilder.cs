@@ -8,10 +8,10 @@ namespace Game.GameScene
         public class Builder
         {
             //services
+            private DataContext dataContext => ServiceProvider.Get<DataContext>();
             private ResourceLoader resourceLoader => ServiceProvider.Get<ResourceLoader>();
 
             public string key;
-            public string skill;
 
             public Builder(string key)
             {
@@ -22,7 +22,7 @@ namespace Game.GameScene
             {
                 var enemy = Instantiate(resourceLoader.enemyPrefabs[key]);
                 enemy.key = key;
-                enemy.skill = SkillBase.GetSkill(skill, enemy);
+                enemy.skill = SkillBase.GetSkill(dataContext.enemyDatas[key].skillKey, enemy);
                 enemy.Initialize();
                 return enemy;
             }

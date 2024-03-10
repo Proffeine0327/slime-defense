@@ -25,8 +25,6 @@ namespace Game.Services
         {
             ServiceProvider.Register(this, true);
 
-            userData.saveData.money = 10000;
-
             tierDatas.Add(Tier.Normal, new TierData { color = new Color32(77, 175, 255, 255) });
             tierDatas.Add(Tier.Epic, new TierData { color = new Color32(184, 77, 255, 255) });
             tierDatas.Add(Tier.Legendary, new TierData { color = new Color32(255, 213, 77, 255) });
@@ -34,7 +32,7 @@ namespace Game.Services
             //gameData
             taskWaiter.AddTask(new LoadingTaskData(() =>
             {
-                return CSVTask
+                return TSVTask
                 (
                     "1LMTnNi6RDe2d1KetKZzUSslsx3iuZzvmK8upQAx8Xw8",
                     "A2",
@@ -46,7 +44,7 @@ namespace Game.Services
             //slimeData
             taskWaiter.AddTask(new LoadingTaskData(() =>
             {
-                return CSVTask
+                return TSVTask
                 (
                     "100EntXVK5z7Ms334Ay-XTuyL0F7P7oo-q0-vHn2YGPs",
                     "2:100",
@@ -66,7 +64,7 @@ namespace Game.Services
             //enemyData
             taskWaiter.AddTask(new LoadingTaskData(() =>
             {
-                return CSVTask
+                return TSVTask
                 (
                     "19Qvrg781qdkjG6Ud-DcEdvpx4hM_hwrb67n1U574g9Y",
                     "2:100",
@@ -83,31 +81,44 @@ namespace Game.Services
                 );
             }));
 
-            //stageData
+            //stage1
             taskWaiter.AddTask(new LoadingTaskData(() =>
             {
-                return CSVTask
+                return TSVTask
                 (
                     "17ozRp_joGxGO9SQF1tYLCSxHZ7WKmdiTtK16uDKNyvI",
                     1127072629,
-                    csv =>
-                    {
-                        stageDatas.Add(StageData.Parse(csv));
-                    }
+                    csv => stageDatas.Add(StageData.Parse(csv))
                 );
+            }));
+            //stage2
+            taskWaiter.AddTask(new LoadingTaskData(() =>
+            {
+                return TSVTask
+                (
+                    "17ozRp_joGxGO9SQF1tYLCSxHZ7WKmdiTtK16uDKNyvI",
+                    577993109,
+                    csv => stageDatas.Add(StageData.Parse(csv))
+                );
+            }));
+
+            taskWaiter.AddTask(new LoadingTaskData(() =>
+            {
+                userData = UserData.Load();
+                return UniTask.DelayFrame(0);
             }));
         }
 
-        private async UniTask CSVTask(string address, long gid, Action<string> action)
+        private async UniTask TSVTask(string address, long gid, Action<string> action)
         {
-            var request = UnityWebRequest.Get($"https://docs.google.com/spreadsheets/d/{address}/export?format=csv&gid={gid}");
+            var request = UnityWebRequest.Get($"https://docs.google.com/spreadsheets/d/{address}/export?format=tsv&gid={gid}");
             await request.SendWebRequest();
             action?.Invoke(request.downloadHandler.text);
         }
 
-        private async UniTask CSVTask(string address, string range, long gid, Action<string> action)
+        private async UniTask TSVTask(string address, string range, long gid, Action<string> action)
         {
-            var request = UnityWebRequest.Get($"https://docs.google.com/spreadsheets/d/{address}/export?format=csv&range={range}&gid={gid}");
+            var request = UnityWebRequest.Get($"https://docs.google.com/spreadsheets/d/{address}/export?format=tsv&range={range}&gid={gid}");
             await request.SendWebRequest();
             action?.Invoke(request.downloadHandler.text);
         }
