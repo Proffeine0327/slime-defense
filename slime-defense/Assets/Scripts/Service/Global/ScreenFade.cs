@@ -12,45 +12,44 @@ namespace Game.Services
     {
         public class ScreenFadeSetting
         {
-            public Action onSceneLoad { get; private set; }
-            public Action onActiveSceneUnload { get; private set; }
-            public bool immediately;
+            public Action sceneLoadRoutine { get; private set; }
+            public Action<string> sceneUnloadRoutine { get; private set; }
+            public LoadSceneMode mode { get; private set; }
 
-            public ScreenFadeSetting OnSceneLoad(Action onSceneLoad)
+            public ScreenFadeSetting SceneLoad(Action sceneLoadRoutine)
             {
-                this.onSceneLoad += onSceneLoad;
+                this.sceneLoadRoutine += sceneLoadRoutine;
                 return this;
             }
 
-            public ScreenFadeSetting OnActiveSceneUnload(Action onActiveSceneUnload)
+            public ScreenFadeSetting SceneUnload(Action<string> sceneUnloadRoutine)
             {
-                this.onActiveSceneUnload += onActiveSceneUnload;
+                this.sceneUnloadRoutine += sceneUnloadRoutine;
                 return this;
             }
 
-            public ScreenFadeSetting SetImmediately(bool immediately)
+            public ScreenFadeSetting SetLoadSceneMode(LoadSceneMode mode)
             {
-                this.immediately = immediately;
+                this.mode = mode;
                 return this;
             }
         }
 
         [SerializeField] private Image blinder;
-        [SerializeField] private float leastLoadTime;
 
         private void Awake()
         {
             ServiceProvider.Register(this, true);
         }
 
-        public ScreenFadeSetting LoadScene(string sceneName)
+        public ScreenFadeSetting Fade()
         {
             var setting = new ScreenFadeSetting();
-            StartCoroutine(LoadRoutine(sceneName, setting));
+            StartCoroutine(LoadRoutine(setting));
             return setting;
         }
 
-        private IEnumerator LoadRoutine(string sceneName, ScreenFadeSetting setting)
+        private IEnumerator LoadRoutine(ScreenFadeSetting setting)
         {
             var waitReal = new WaitForSecondsRealtime(0f);
             yield return waitReal;
@@ -59,43 +58,12 @@ namespace Game.Services
             blinder.DOColor(Color.black, 0.75f).SetUpdate(true);
             yield return new WaitForSecondsRealtime(1.5f);
 
-            if (!setting.immediately)
-            {
-                SceneManager.LoadScene("Loading");
-                yield return waitReal;
-                setting.onActiveSceneUnload?.Invoke();
-
-                blinder.DOColor(default, 1f).SetUpdate(true);
-                yield return new WaitForSecondsRealtime(1f);
-                blinder.gameObject.SetActive(false);
-
-                var load = SceneManager.LoadSceneAsync(sceneName);
-                load.allowSceneActivation = false;
-                for (float t = 0; t < leastLoadTime && !load.isDone; t += Time.unscaledDeltaTime)
-                    yield return waitReal;
-
-                blinder.gameObject.SetActive(true);
-                blinder.DOColor(Color.black, 0.75f).SetUpdate(true);
-                yield return new WaitForSecondsRealtime(1.5f);
-
-                load.allowSceneActivation = true;
-                yield return waitReal;
-                setting.onActiveSceneUnload?.Invoke();
-            }
-            else
-            {
-                var load = SceneManager.LoadSceneAsync(sceneName);
-                load.allowSceneActivation = false;
-                for (float t = 0; t < leastLoadTime && !load.isDone; t += Time.unscaledDeltaTime)
-                    yield return waitReal;
-                load.allowSceneActivation = true;
-                setting.onActiveSceneUnload?.Invoke();
-            }
-            setting.onSceneLoad?.Invoke();
-            yield return waitReal;
+            setting.sceneUnloadRoutine?.Invoke(SceneManager.GetActiveScene().name);
+            setting.sceneLoadRoutine?.Invoke();
+            yield return new WaitForSecondsRealtime(0.5f);
 
             blinder.DOColor(default, 0.75f).SetUpdate(true);
-            yield return new WaitForSecondsRealtime(1.5f);
+            yield return new WaitForSecondsRealtime(0.75f);
             blinder.gameObject.SetActive(false);
         }
     }

@@ -18,7 +18,12 @@ namespace Game.LoadScene
             taskWaiter
                 .ObserveEveryValueChanged(w => w.IsEndLoad)
                 .Where(b => b == true)
-                .Subscribe(b => screenFade.LoadScene("Lobby").SetImmediately(true));
+                .Subscribe(b => 
+                {
+                    screenFade
+                        .Fade()
+                        .SceneLoad(() => SceneManager.LoadScene("Lobby"));
+                });
         }
     }
 }

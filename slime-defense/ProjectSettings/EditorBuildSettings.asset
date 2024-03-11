@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Lobby.unity
     guid: ec4a86f3845b0cc45b99f62626d97fa4
   - enabled: 1
+    path: Assets/Scenes/SlimeDetail.unity
+    guid: e613d7d59d58c80438a63429a0c2bca2
+  - enabled: 1
     path: Assets/Scenes/Stage/Stage1.unity
     guid: 64c39c64ccbaf7d48a264765fb2a9f1a
   m_configObjects:

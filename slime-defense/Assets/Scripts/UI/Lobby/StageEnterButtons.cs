@@ -25,14 +25,14 @@ namespace Game.UI.LobbyScene
                 .Subscribe(_ => 
                 {
                     dataContext.userData.CreateNewSaveData(lobbyManager.Stage.Value, false, dataContext.userData.deck);
-                    screenFade.LoadScene($"Stage{lobbyManager.Stage.Value}").SetImmediately(true);
+                    // screenFade.LoadScene($"Stage{lobbyManager.Stage.Value}").SetImmediately(true);
                 });
             infinity
                 .OnClickAsObservable()
                 .Subscribe(_ => 
                 {
                     dataContext.userData.CreateNewSaveData(lobbyManager.Stage.Value, true, dataContext.userData.deck);
-                    screenFade.LoadScene($"Stage{lobbyManager.Stage.Value}").SetImmediately(true);
+                    // screenFade.LoadScene($"Stage{lobbyManager.Stage.Value}").SetImmediately(true);
                 });
         }
     }
