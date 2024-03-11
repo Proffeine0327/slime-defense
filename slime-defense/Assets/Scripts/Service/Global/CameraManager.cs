@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Game.Services
 {
@@ -8,9 +9,9 @@ namespace Game.Services
 
         private void Awake()
         {
-            ServiceProvider.Register(this);
+            ServiceProvider.Register(this, true);
 
-            mainCamera = GetComponent<Camera>();
+            SceneManager.activeSceneChanged += (_, _) => mainCamera = Camera.main;
         }
     }
 }

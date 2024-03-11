@@ -52,10 +52,7 @@ namespace Game.UI.LobbyScene
 
             deckButton
                 .OnClickAsObservable()
-                .Subscribe(_ =>
-                {
-
-                });
+                .Subscribe(_ => sceneNavigation.LoadNewScene("DeckSetting"));
             detailButton
                 .OnClickAsObservable()
                 .Subscribe(_ => sceneNavigation.LoadNewScene("SlimeDetail"));

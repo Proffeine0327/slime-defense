@@ -426,6 +426,7 @@ GameObject:
   - component: {fileID: -2117705647130267509}
   - component: {fileID: 6840435266559512398}
   - component: {fileID: -2755302731467281037}
+  - component: {fileID: 7124330752212575027}
   m_Layer: 7
   m_Name: GrassSlime
   m_TagString: Untagged
@@ -460,7 +461,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5107252207235828559}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9f021cc8d6b7ac4687554702e84b776, type: 3}
   m_Name: 
@@ -507,6 +508,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.75
   m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!114 &7124330752212575027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5107252207235828559}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32d86dd50b639c2418e49099cf8c8a65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6636789052249868453
 GameObject:
   m_ObjectHideFlags: 0

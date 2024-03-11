@@ -146,8 +146,8 @@ namespace Game.Services
             get
             {
                 var list = new HashSet<string>();
-                foreach(var waveData in waveDatas)
-                    foreach(var spawnData in waveData.spawnDatas)
+                foreach (var waveData in waveDatas)
+                    foreach (var spawnData in waveData.spawnDatas)
                         list.Add(spawnData.key);
                 return list.ToArray();
             }
@@ -178,7 +178,7 @@ namespace Game.Services
     {
         public int hp = 999;
         public int money;
-        public string[] deck;
+        public List<string> deck = new() { "GrassSlime", "DevilSlime", "AngleSlime", "IceSlime", "LavaSlime", "MetalSlime", };
         public bool[] unlockStages = new[] { true };
         public bool[] unlockInfModes = new[] { false };
         public SaveData saveData = new();
@@ -191,21 +191,21 @@ namespace Game.Services
             var userdata = JsonUtility.FromJson<UserData>(json) ?? new UserData();
 
             var adjUnlockStages = Enumerable.Repeat(false, dataContext.stageDatas.Count).ToArray();
-            if(userdata.unlockStages != null)
+            if (userdata.unlockStages != null)
                 Array.Copy(userdata.unlockStages, adjUnlockStages, Mathf.Min(userdata.unlockStages.Length, adjUnlockStages.Length));
             userdata.unlockStages = adjUnlockStages;
 
             var adjUnlockInfModes = Enumerable.Repeat(false, dataContext.stageDatas.Count).ToArray();
-            if(userdata.unlockInfModes != null)
+            if (userdata.unlockInfModes != null)
                 Array.Copy(userdata.unlockInfModes, adjUnlockInfModes, Mathf.Min(userdata.unlockInfModes.Length, adjUnlockInfModes.Length));
             userdata.unlockInfModes = adjUnlockInfModes;
 
             userdata.money = 10000;
-            
+
             return userdata;
         }
 
-        public void CreateNewSaveData(int stage, bool isInfinity, string[] deck)
+        public void CreateNewSaveData(int stage, bool isInfinity)
         {
             var dataContext = ServiceProvider.Get<DataContext>();
 
@@ -213,7 +213,7 @@ namespace Game.Services
             {
                 stage = stage,
                 isInfinity = isInfinity,
-                deck = deck,
+                deck = dataContext.userData.deck.ToArray(),
                 money = dataContext.stageDatas[stage].startMoney,
                 life = dataContext.stageDatas[stage].startLife
             };

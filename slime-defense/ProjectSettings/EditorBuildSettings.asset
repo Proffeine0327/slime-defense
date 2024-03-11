@@ -18,6 +18,9 @@ EditorBuildSettings:
     path: Assets/Scenes/SlimeDetail.unity
     guid: e613d7d59d58c80438a63429a0c2bca2
   - enabled: 1
+    path: Assets/Scenes/DeckSetting.unity
+    guid: 5e5ca5e2280a8fa448744ca23e40e5b7
+  - enabled: 1
     path: Assets/Scenes/Stage/Stage1.unity
     guid: 64c39c64ccbaf7d48a264765fb2a9f1a
   m_configObjects:

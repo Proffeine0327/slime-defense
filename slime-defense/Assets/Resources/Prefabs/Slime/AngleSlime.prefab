@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8255993568151530051}
   - component: {fileID: 6799215701937420226}
   - component: {fileID: 1599805693773224524}
+  - component: {fileID: 5171072768510684611}
   m_Layer: 7
   m_Name: AngleSlime
   m_TagString: Untagged
@@ -46,7 +47,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2040660350086861257}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9f021cc8d6b7ac4687554702e84b776, type: 3}
   m_Name: 
@@ -93,6 +94,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.75
   m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!114 &5171072768510684611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2040660350086861257}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32d86dd50b639c2418e49099cf8c8a65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2787838089219398116
 GameObject:
   m_ObjectHideFlags: 0

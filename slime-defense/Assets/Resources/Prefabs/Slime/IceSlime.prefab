@@ -546,6 +546,7 @@ GameObject:
   - component: {fileID: -6511637104179784595}
   - component: {fileID: 8664710127481753745}
   - component: {fileID: 7450245600343274722}
+  - component: {fileID: 2034362980427665072}
   m_Layer: 7
   m_Name: IceSlime
   m_TagString: Untagged
@@ -580,7 +581,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7653234346094456793}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9f021cc8d6b7ac4687554702e84b776, type: 3}
   m_Name: 
@@ -627,6 +628,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.75
   m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!114 &2034362980427665072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7653234346094456793}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32d86dd50b639c2418e49099cf8c8a65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8058875899629779391
 GameObject:
   m_ObjectHideFlags: 0

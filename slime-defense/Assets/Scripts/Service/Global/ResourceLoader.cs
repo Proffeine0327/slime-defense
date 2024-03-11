@@ -11,7 +11,8 @@ namespace Game.Services
         [NonSerialized] public Material gridDefaultMaterial;
         [NonSerialized] public Material gridPlaceableMaterial;
         [NonSerialized] public Material gridUnplaceableMaterial;
-        [NonSerialized] public Dictionary<string, Slime> slimePrefabs = new();
+        [NonSerialized] public Dictionary<string, Game.GameScene.Slime> slimePrefabs = new();
+        [NonSerialized] public Dictionary<string, Game.DeckSettingScene.Slime> deckSlimePrefabs = new();
         [NonSerialized] public Dictionary<string, Enemy> enemyPrefabs = new();
         [NonSerialized] public Dictionary<string, Sprite> slimeIcons = new();
         [NonSerialized] public Dictionary<string, Sprite> enemyIcons = new();
@@ -25,8 +26,11 @@ namespace Game.Services
             gridPlaceableMaterial = Resources.Load<Material>("Materials/Grid/Placeable");
             gridUnplaceableMaterial = Resources.Load<Material>("Materials/Grid/Unplaceable");
 
-            foreach (var prefab in Resources.LoadAll<Slime>("Prefabs/Slime"))
+            foreach (var prefab in Resources.LoadAll<Game.GameScene.Slime>("Prefabs/Slime"))
                 slimePrefabs.Add(prefab.name, prefab);
+
+            foreach (var prefab in Resources.LoadAll<Game.DeckSettingScene.Slime>("Prefabs/Slime"))
+                deckSlimePrefabs.Add(prefab.name, prefab);
 
             foreach (var prefab in Resources.LoadAll<Enemy>("Prefabs/Enemy"))
                 enemyPrefabs.Add(prefab.name, prefab);

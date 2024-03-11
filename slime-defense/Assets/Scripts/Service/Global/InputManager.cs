@@ -21,7 +21,7 @@ namespace Game.Services
 
         private void Start()
         {
-            ServiceProvider.Register(this);
+            ServiceProvider.Register(this, true);
         }
 
         private void Update()

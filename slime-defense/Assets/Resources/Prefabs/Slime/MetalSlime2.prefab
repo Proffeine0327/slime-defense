@@ -201,9 +201,9 @@ GameObject:
   - component: {fileID: -1632659666744677326}
   - component: {fileID: -2353501860618183823}
   - component: {fileID: 2294879030968221367}
-  - component: {fileID: -9072179986323103631}
+  - component: {fileID: 6508182670272557115}
   m_Layer: 7
-  m_Name: MetalSlime
+  m_Name: MetalSlime2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -283,7 +283,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.75
   m_Center: {x: 0, y: 0.5, z: 0}
---- !u!114 &-9072179986323103631
+--- !u!114 &6508182670272557115
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

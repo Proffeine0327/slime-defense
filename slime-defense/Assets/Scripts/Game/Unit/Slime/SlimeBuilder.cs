@@ -57,6 +57,7 @@ namespace Game.GameScene
             public Slime Build()
             {
                 var slime = Instantiate(resourceLoader.slimePrefabs[slimeKey]);
+                slime.enabled = true;
                 slime.slimeKey = slimeKey;
                 slime.lv.Value = lv;
                 slime.isPreview = preview;
