@@ -22,7 +22,7 @@ namespace Game.LoadScene
                 {
                     screenFade
                         .Fade()
-                        .SceneLoad(() => SceneManager.LoadScene("Lobby"));
+                        .LoadScene(() => SceneManager.LoadSceneAsync("Lobby"), "Lobby");
                 });
         }
     }

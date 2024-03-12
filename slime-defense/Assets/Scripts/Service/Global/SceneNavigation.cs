@@ -29,13 +29,8 @@ namespace Game.Services
             stack.Push(data);
             screenFade
                 .Fade()
-                .SceneUnload(_ => DisableAllCurrentGameObject())
-                .SceneLoad(() =>
-                {
-                    SceneManager
-                        .LoadSceneAsync(sceneName, LoadSceneMode.Additive)
-                        .completed += _ => SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
-                });
+                .OnSceneUnload(() => DisableAllCurrentGameObject())
+                .LoadScene(() => SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive), sceneName);
         }
 
         public void LoadPreviousScene(string failure)
@@ -44,10 +39,9 @@ namespace Game.Services
             {
                 screenFade
                     .Fade()
-                    .SceneUnload(s => SceneManager.UnloadSceneAsync(s))
-                    .SceneLoad(() =>
+                    .UnloadScene(s =>SceneManager.UnloadSceneAsync(s))
+                    .OnSceneLoad(() =>
                     {
-                        SceneManager.SetActiveScene(SceneManager.GetSceneByName(data.sceneName));
                         foreach (var obj in SceneManager.GetActiveScene().GetRootGameObjects())
                         {
                             if (data.datas.ContainsKey(obj))
@@ -60,7 +54,7 @@ namespace Game.Services
             {
                 screenFade
                     .Fade()
-                    .SceneLoad(() => SceneManager.LoadScene(failure));
+                    .LoadScene(() => SceneManager.LoadSceneAsync(failure), failure);
             }
         }
 

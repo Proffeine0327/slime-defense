@@ -12,19 +12,35 @@ namespace Game.Services
     {
         public class ScreenFadeSetting
         {
-            public Action sceneLoadRoutine { get; private set; }
-            public Action<string> sceneUnloadRoutine { get; private set; }
+            public Action onSceneLoad { get; private set; }
+            public Action onSceneUnload { get; private set; }
+            public Func<AsyncOperation> loadScene { get; private set; }
+            public string loadSceneName { get; private set; }
+            public Func<string, AsyncOperation> unloadScene { get; private set; }
             public LoadSceneMode mode { get; private set; }
 
-            public ScreenFadeSetting SceneLoad(Action sceneLoadRoutine)
+            public ScreenFadeSetting OnSceneLoad(Action onSceneLoad)
             {
-                this.sceneLoadRoutine += sceneLoadRoutine;
+                this.onSceneLoad += onSceneLoad;
                 return this;
             }
 
-            public ScreenFadeSetting SceneUnload(Action<string> sceneUnloadRoutine)
+            public ScreenFadeSetting OnSceneUnload(Action onSceneUnload)
             {
-                this.sceneUnloadRoutine += sceneUnloadRoutine;
+                this.onSceneUnload += onSceneUnload;
+                return this;
+            }
+
+            public ScreenFadeSetting LoadScene(Func<AsyncOperation> loadScene, string sceneName)
+            {
+                this.loadScene = loadScene;
+                this.loadSceneName = sceneName;
+                return this;
+            }
+
+            public ScreenFadeSetting UnloadScene(Func<string, AsyncOperation> unloadScene)
+            {
+                this.unloadScene = unloadScene;
                 return this;
             }
 
@@ -58,8 +74,20 @@ namespace Game.Services
             blinder.DOColor(Color.black, 0.75f).SetUpdate(true);
             yield return new WaitForSecondsRealtime(1.5f);
 
-            setting.sceneUnloadRoutine?.Invoke(SceneManager.GetActiveScene().name);
-            setting.sceneLoadRoutine?.Invoke();
+            if (setting.unloadScene != null)
+            {
+                var operation = setting.unloadScene.Invoke(SceneManager.GetActiveScene().name);
+                while(!operation.isDone) yield return waitReal;
+            }
+            setting.onSceneUnload?.Invoke();
+            
+            if (setting.loadScene != null)
+            {
+                var operation = setting.loadScene.Invoke();
+                while(!operation.isDone) yield return waitReal;
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName(setting.loadSceneName));
+            }
+            setting.onSceneLoad?.Invoke();
             yield return new WaitForSecondsRealtime(0.5f);
 
             blinder.DOColor(default, 0.75f).SetUpdate(true);

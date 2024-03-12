@@ -27,7 +27,7 @@ namespace Game.UI.LobbyScene
                     dataContext.userData.CreateNewSaveData(lobbyManager.Stage.Value, false);
                     screenFade
                         .Fade()
-                        .SceneLoad(() => SceneManager.LoadScene($"Stage{lobbyManager.Stage.Value}"));
+                        .LoadScene(() => SceneManager.LoadSceneAsync($"Stage{lobbyManager.Stage.Value}"), $"Stage{lobbyManager.Stage.Value}");
                 });
             infinity
                 .OnClickAsObservable()
@@ -36,7 +36,7 @@ namespace Game.UI.LobbyScene
                     dataContext.userData.CreateNewSaveData(lobbyManager.Stage.Value, true);
                     screenFade
                         .Fade()
-                        .SceneLoad(() => SceneManager.LoadScene($"Stage{lobbyManager.Stage.Value}"));
+                        .LoadScene(() => SceneManager.LoadSceneAsync($"Stage{lobbyManager.Stage.Value}"), $"Stage{lobbyManager.Stage.Value}");
                 });
         }
     }

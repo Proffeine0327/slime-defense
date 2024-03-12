@@ -5,9 +5,9 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.UI.SlimeDetailScene
+namespace Game.UI
 {
-    public class TestButton : MonoBehaviour
+    public class MovePreviousScene : MonoBehaviour
     {
         //service
         private SceneNavigation sceneNavigation => ServiceProvider.Get<SceneNavigation>();
@@ -16,7 +16,7 @@ namespace Game.UI.SlimeDetailScene
         {
             GetComponent<Button>()
                 .OnClickAsObservable()
-                .Subscribe(_ => sceneNavigation.LoadPreviousScene("development"));
+                .Subscribe(_ => sceneNavigation.LoadPreviousScene("Lobby"));
         }
     }
 }

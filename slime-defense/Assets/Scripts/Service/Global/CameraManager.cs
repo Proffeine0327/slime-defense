@@ -7,11 +7,24 @@ namespace Game.Services
     {
         public Camera mainCamera { get; private set; }
 
+        public Vector2 GetScreenPosition(Transform transform)
+        {
+            var pos = transform.position;
+            return mainCamera.WorldToScreenPoint(pos);
+        }
+
         private void Awake()
         {
             ServiceProvider.Register(this, true);
 
-            SceneManager.activeSceneChanged += (_, _) => mainCamera = Camera.main;
+            SceneManager.sceneUnloaded += _ => mainCamera = null;
+            mainCamera = Camera.main;
+        }
+
+        private void Update()
+        {
+            if(!mainCamera || !mainCamera.gameObject.activeSelf)
+                mainCamera = Camera.main;
         }
     }
 }
