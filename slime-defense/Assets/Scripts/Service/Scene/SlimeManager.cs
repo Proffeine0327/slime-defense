@@ -71,7 +71,9 @@ namespace Game.Services
 
         public bool CreateSlime(string slimeKey, Vector2Int xy)
         {
-            var data = dataContext.slimeDatas[slimeKey];
+            if(!grids.IndexInGrid(xy)) return false;
+
+            var data = dataContext.slimeDatas[slimeKey];            
             var grid = grids.GetGrid(xy);
             var saveData = dataContext.userData.saveData;
 

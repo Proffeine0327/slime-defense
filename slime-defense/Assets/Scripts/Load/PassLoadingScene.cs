@@ -4,6 +4,7 @@ using Game.Services;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Cysharp.Threading.Tasks;
 
 namespace Game.LoadScene
 {
@@ -22,7 +23,7 @@ namespace Game.LoadScene
                 {
                     screenFade
                         .Fade()
-                        .LoadScene(() => SceneManager.LoadSceneAsync("Lobby"), "Lobby");
+                        .LoadScene(async () => await SceneManager.LoadSceneAsync("Lobby"));
                 });
         }
     }

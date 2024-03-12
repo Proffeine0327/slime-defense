@@ -5,6 +5,7 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Cysharp.Threading.Tasks;
 
 namespace Game.UI.LobbyScene
 {
@@ -27,7 +28,8 @@ namespace Game.UI.LobbyScene
                     dataContext.userData.CreateNewSaveData(lobbyManager.Stage.Value, false);
                     screenFade
                         .Fade()
-                        .LoadScene(() => SceneManager.LoadSceneAsync($"Stage{lobbyManager.Stage.Value}"), $"Stage{lobbyManager.Stage.Value}");
+                        // .LoadScene(async () => await SceneManager.LoadSceneAsync($"Stage{lobbyManager.Stage.Value}"));
+                        .LoadScene(async () => await SceneManager.LoadSceneAsync("development"));
                 });
             infinity
                 .OnClickAsObservable()
@@ -36,7 +38,7 @@ namespace Game.UI.LobbyScene
                     dataContext.userData.CreateNewSaveData(lobbyManager.Stage.Value, true);
                     screenFade
                         .Fade()
-                        .LoadScene(() => SceneManager.LoadSceneAsync($"Stage{lobbyManager.Stage.Value}"), $"Stage{lobbyManager.Stage.Value}");
+                        .LoadScene(async () => await SceneManager.LoadSceneAsync($"Stage{lobbyManager.Stage.Value}"));
                 });
         }
     }

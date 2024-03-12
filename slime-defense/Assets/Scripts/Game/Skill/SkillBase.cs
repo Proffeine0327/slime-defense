@@ -18,9 +18,18 @@ namespace Game.GameScene
 
         public static SkillBase GetSkill(string key, UnitBase caster)
         {
-            if (string.IsNullOrEmpty(key)) return new SkillBase(caster);
+            key = "Game.GameScene." + key;
+            if (string.IsNullOrEmpty(key))
+            {
+                Debug.Log("EmptyKey");
+                return new SkillBase(caster);
+            }
             var t = Type.GetType(key);
-            if (t == null) return new SkillBase(caster);
+            if (t == null)
+            {
+                Debug.Log("HasNotType");
+                return new SkillBase(caster);
+            }
             return Activator.CreateInstance(t, args: caster) as SkillBase;
         }
 

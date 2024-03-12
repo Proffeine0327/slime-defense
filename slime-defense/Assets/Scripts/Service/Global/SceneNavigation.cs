@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -17,10 +19,22 @@ namespace Game.Services
         private ScreenFade screenFade => ServiceProvider.Get<ScreenFade>();
 
         private Stack<SceneStackData> stack = new();
+        private string current;
 
         private void Awake()
         {
             ServiceProvider.Register(this, true);
+
+            SceneManager.activeSceneChanged += (_, c) =>
+            {
+                Debug.Log(c.name);
+                Debug.Log(current);
+                if(c.name != current)
+                {
+                    stack.Clear();
+                    current = c.name;
+                }
+            };
         }
 
         public void LoadNewScene(string sceneName)
@@ -29,8 +43,13 @@ namespace Game.Services
             stack.Push(data);
             screenFade
                 .Fade()
-                .OnSceneUnload(() => DisableAllCurrentGameObject())
-                .LoadScene(() => SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive), sceneName);
+                .UnloadScene(async (_) => DisableAllCurrentGameObject())
+                .LoadScene(async () =>
+                {
+                    current = sceneName;
+                    await SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+                    SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+                });
         }
 
         public void LoadPreviousScene(string failure)
@@ -39,22 +58,27 @@ namespace Game.Services
             {
                 screenFade
                     .Fade()
-                    .UnloadScene(s =>SceneManager.UnloadSceneAsync(s))
-                    .OnSceneLoad(() =>
+                    .UnloadScene(async s => await SceneManager.UnloadSceneAsync(s))
+                    .LoadScene(async () =>
                     {
+                        current = data.sceneName;
+                        SceneManager.SetActiveScene(SceneManager.GetSceneByName(data.sceneName));
                         foreach (var obj in SceneManager.GetActiveScene().GetRootGameObjects())
                         {
                             if (data.datas.ContainsKey(obj))
                                 obj.SetActive(data.datas[obj]);
                         }
                     });
-
             }
             else
             {
                 screenFade
                     .Fade()
-                    .LoadScene(() => SceneManager.LoadSceneAsync(failure), failure);
+                    .LoadScene(async () =>
+                    {
+                        current = failure;
+                        await SceneManager.LoadSceneAsync(failure);
+                    });
             }
         }
 

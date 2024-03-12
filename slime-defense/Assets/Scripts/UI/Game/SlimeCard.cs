@@ -17,6 +17,7 @@ namespace Game.UI.GameScene
         private InputManager inputManager => ServiceProvider.Get<InputManager>();
         private DataContext dataContext => ServiceProvider.Get<DataContext>();
         private ResourceLoader resourceLoader => ServiceProvider.Get<ResourceLoader>();
+        private GameManager gameManager => ServiceProvider.Get<GameManager>();
         private Grids grids => ServiceProvider.Get<Grids>();
 
         //member
@@ -52,6 +53,7 @@ namespace Game.UI.GameScene
             OnChangeState += state =>
             {
                 var skilldata = data.skill;
+                Debug.Log(skilldata.GetType());
                 if (state) explain.Display(skilldata.Icon, skilldata.Name, skilldata.Explain);
                 else explain.Hide();
             };
@@ -60,6 +62,8 @@ namespace Game.UI.GameScene
 
         public void OnBeginDrag(PointerEventData eventData)
         {
+            if(gameManager.IsWaveStart) return;
+
             popup.Hide();
             preview = new Slime.Builder(slimedata.slimeKey)
                 .SetPreview()
@@ -70,6 +74,8 @@ namespace Game.UI.GameScene
 
         public void OnDrag(PointerEventData eventData)
         {
+            if(gameManager.IsWaveStart) return;
+
             var plane = new Plane(Vector3.down, Vector3.zero);
             if (plane.Raycast(inputManager.TouchRay, out var dist))
             {
@@ -81,6 +87,8 @@ namespace Game.UI.GameScene
 
         public void OnEndDrag(PointerEventData eventData)
         {
+            if(gameManager.IsWaveStart) return;
+
             var plane = new Plane(Vector3.down, Vector3.zero);
             if (plane.Raycast(inputManager.TouchRay, out var dist))
             {

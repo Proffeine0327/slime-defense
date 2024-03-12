@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
 using System;
+using Cysharp.Threading.Tasks;
 
 namespace Game.Services
 {
@@ -12,41 +13,18 @@ namespace Game.Services
     {
         public class ScreenFadeSetting
         {
-            public Action onSceneLoad { get; private set; }
-            public Action onSceneUnload { get; private set; }
-            public Func<AsyncOperation> loadScene { get; private set; }
-            public string loadSceneName { get; private set; }
-            public Func<string, AsyncOperation> unloadScene { get; private set; }
-            public LoadSceneMode mode { get; private set; }
+            public Func<UniTask> loadScene { get; private set; }
+            public Func<string, UniTask> unloadScene { get; private set; }
 
-            public ScreenFadeSetting OnSceneLoad(Action onSceneLoad)
-            {
-                this.onSceneLoad += onSceneLoad;
-                return this;
-            }
-
-            public ScreenFadeSetting OnSceneUnload(Action onSceneUnload)
-            {
-                this.onSceneUnload += onSceneUnload;
-                return this;
-            }
-
-            public ScreenFadeSetting LoadScene(Func<AsyncOperation> loadScene, string sceneName)
+            public ScreenFadeSetting LoadScene(Func<UniTask> loadScene)
             {
                 this.loadScene = loadScene;
-                this.loadSceneName = sceneName;
                 return this;
             }
 
-            public ScreenFadeSetting UnloadScene(Func<string, AsyncOperation> unloadScene)
+            public ScreenFadeSetting UnloadScene(Func<string, UniTask> unloadScene)
             {
                 this.unloadScene = unloadScene;
-                return this;
-            }
-
-            public ScreenFadeSetting SetLoadSceneMode(LoadSceneMode mode)
-            {
-                this.mode = mode;
                 return this;
             }
         }
@@ -61,37 +39,25 @@ namespace Game.Services
         public ScreenFadeSetting Fade()
         {
             var setting = new ScreenFadeSetting();
-            StartCoroutine(LoadRoutine(setting));
+            LoadRoutine(setting).Forget();
             return setting;
         }
 
-        private IEnumerator LoadRoutine(ScreenFadeSetting setting)
+        private async UniTaskVoid LoadRoutine(ScreenFadeSetting setting)
         {
-            var waitReal = new WaitForSecondsRealtime(0f);
-            yield return waitReal;
-
             blinder.gameObject.SetActive(true);
             blinder.DOColor(Color.black, 0.75f).SetUpdate(true);
-            yield return new WaitForSecondsRealtime(1.5f);
+            await UniTask.Delay(TimeSpan.FromSeconds(1.5f));
 
             if (setting.unloadScene != null)
-            {
-                var operation = setting.unloadScene.Invoke(SceneManager.GetActiveScene().name);
-                while(!operation.isDone) yield return waitReal;
-            }
-            setting.onSceneUnload?.Invoke();
+                await setting.unloadScene.Invoke(SceneManager.GetActiveScene().name);
             
             if (setting.loadScene != null)
-            {
-                var operation = setting.loadScene.Invoke();
-                while(!operation.isDone) yield return waitReal;
-                SceneManager.SetActiveScene(SceneManager.GetSceneByName(setting.loadSceneName));
-            }
-            setting.onSceneLoad?.Invoke();
-            yield return new WaitForSecondsRealtime(0.5f);
+                await setting.loadScene.Invoke();
+            await UniTask.Delay(TimeSpan.FromSeconds(1.5f));
 
             blinder.DOColor(default, 0.75f).SetUpdate(true);
-            yield return new WaitForSecondsRealtime(0.75f);
+            await UniTask.Delay(TimeSpan.FromSeconds(0.75f));
             blinder.gameObject.SetActive(false);
         }
     }
