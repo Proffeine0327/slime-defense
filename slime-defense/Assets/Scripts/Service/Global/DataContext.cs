@@ -11,7 +11,7 @@ namespace Game.Services
         //services
         private TaskWaiter taskWaiter => ServiceProvider.Get<TaskWaiter>();
 
-        //csv data
+        //tsv data
         [NonSerialized] public GameData gameData = new();
         [NonSerialized] public Dictionary<string, SlimeData> slimeDatas = new();
         [NonSerialized] public Dictionary<string, EnemyData> enemyDatas = new();
@@ -35,9 +35,9 @@ namespace Game.Services
                 return TSVTask
                 (
                     "1LMTnNi6RDe2d1KetKZzUSslsx3iuZzvmK8upQAx8Xw8",
-                    "A2",
+                    "2:100",
                     0,
-                    csv => gameData.maxLv = int.Parse(csv)
+                    tsv => gameData = GameData.Parse(tsv)
                 );
             }));
 
@@ -49,9 +49,9 @@ namespace Game.Services
                     "100EntXVK5z7Ms334Ay-XTuyL0F7P7oo-q0-vHn2YGPs",
                     "2:100",
                     0,
-                    csv =>
+                    tsv =>
                     {
-                        var split = csv.Split('\n');
+                        var split = tsv.Split('\n');
                         foreach (var row in split)
                         {
                             var data = SlimeData.Parse(row);
@@ -69,9 +69,9 @@ namespace Game.Services
                     "19Qvrg781qdkjG6Ud-DcEdvpx4hM_hwrb67n1U574g9Y",
                     "2:100",
                     0,
-                    csv =>
+                    tsv =>
                     {
-                        var split = csv.Split('\n');
+                        var split = tsv.Split('\n');
                         foreach (var row in split)
                         {
                             var data = EnemyData.Parse(row);
@@ -88,7 +88,7 @@ namespace Game.Services
                 (
                     "17ozRp_joGxGO9SQF1tYLCSxHZ7WKmdiTtK16uDKNyvI",
                     1127072629,
-                    csv => stageDatas.Add(StageData.Parse(csv))
+                    tsv => stageDatas.Add(StageData.Parse(tsv))
                 );
             }));
             //stage2
@@ -98,7 +98,7 @@ namespace Game.Services
                 (
                     "17ozRp_joGxGO9SQF1tYLCSxHZ7WKmdiTtK16uDKNyvI",
                     577993109,
-                    csv => stageDatas.Add(StageData.Parse(csv))
+                    tsv => stageDatas.Add(StageData.Parse(tsv))
                 );
             }));
 

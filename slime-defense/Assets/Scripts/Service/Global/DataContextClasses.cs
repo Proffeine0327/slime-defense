@@ -88,6 +88,17 @@ namespace Game.Services
     public class GameData
     {
         public int maxLv;
+        public float sellReceiveRatio;
+
+        public static GameData Parse(string tsv)
+        {
+            var split = tsv.Split('\t');
+            var data = new GameData();
+            data.maxLv = int.Parse(split[0]);
+            data.sellReceiveRatio = float.Parse(split[1]);
+
+            return data;
+        }
     }
     public class TierData
     {
@@ -96,9 +107,9 @@ namespace Game.Services
     public enum Tier { Normal, Epic, Legendary }
     public class StageData
     {
-        public static StageData Parse(string csv)
+        public static StageData Parse(string tsv)
         {
-            var split = csv.Split('\n');
+            var split = tsv.Split('\n');
             var stageRows = split[1].Split('\t');
             var newStageData = new StageData();
             newStageData.name = stageRows[0];
@@ -177,7 +188,7 @@ namespace Game.Services
     public class UserData
     {
         public int hp = 999;
-        public int money;
+        public float money;
         public List<string> deck = new() { "GrassSlime", "DevilSlime", "AngleSlime", "IceSlime", "LavaSlime", "MetalSlime", };
         public bool[] unlockStages = new[] { true };
         public bool[] unlockInfModes = new[] { false };

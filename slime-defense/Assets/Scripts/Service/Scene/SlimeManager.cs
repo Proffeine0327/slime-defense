@@ -15,12 +15,13 @@ namespace Game.Services
         private DataContext dataContext => ServiceProvider.Get<DataContext>();
         private SelectManager selectManager => ServiceProvider.Get<SelectManager>();
 
-        public event Action OnUnitUpdate;
+        public HashSet<Slime> Slimes = new();
+
+        public event Action OnSlimeUpdate;
 
         private void Awake()
         {
             ServiceProvider.Register(this);
-
         }
 
         public bool MoveSlime(Vector2Int from, Vector2Int to)
@@ -45,7 +46,7 @@ namespace Game.Services
                     grids.GetGrid(to).Slime = grids.GetGrid(from).Slime;
                     grids.GetGrid(from).Slime = null;
 
-                    OnUnitUpdate?.Invoke();
+                    OnSlimeUpdate?.Invoke();
                     return true;
                 }
                 else
@@ -58,7 +59,7 @@ namespace Game.Services
                     grids.GetGrid(from).Slime = grids.GetGrid(to).Slime;
                     grids.GetGrid(to).Slime = temp;
 
-                    OnUnitUpdate?.Invoke();
+                    OnSlimeUpdate?.Invoke();
                     return true;
                 }
             }
@@ -66,7 +67,7 @@ namespace Game.Services
             Debug.Log("move");
             grids.GetGrid(to).Slime = grids.GetGrid(from).Slime;
             grids.GetGrid(from).Slime = null;
-            OnUnitUpdate?.Invoke();
+            OnSlimeUpdate?.Invoke();
             return true;
         }
 
@@ -90,17 +91,17 @@ namespace Game.Services
 
                 saveData.money -= data.cost;
                 unit.LevelUp();
-                OnUnitUpdate?.Invoke();
+                OnSlimeUpdate?.Invoke();
                 return true;
             }
 
-            var playerUnit = new Slime.Builder(slimeKey)
+            var slime = new Slime.Builder(slimeKey)
                 .SetIndex(xy)
                 .Build();
-            grid.Slime = playerUnit;
+            grid.Slime = slime;
             saveData.money -= data.cost;
             // SoundManager.PlaySound("Tower_Apperance", 50);
-            OnUnitUpdate?.Invoke();
+            OnSlimeUpdate?.Invoke();
             return true;
         }
 

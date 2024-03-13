@@ -11,6 +11,7 @@ namespace Game.GameScene
             //services
             private ResourceLoader resourceLoader => ServiceProvider.Get<ResourceLoader>();
             private DataContext dataContext => ServiceProvider.Get<DataContext>();
+            private SlimeManager slimeManager => ServiceProvider.Get<SlimeManager>();
 
             private bool preview;
             private int lv = 1;
@@ -64,6 +65,9 @@ namespace Game.GameScene
                 slime.skill = SkillBase.GetSkill(dataContext.slimeDatas[slimeKey].skillKey, slime);
                 slime.MoveTo(index);
                 slime.Initialize();
+
+                slimeManager.Slimes.Add(slime);
+
                 return slime;
             }
         }

@@ -42,9 +42,10 @@ namespace Game.GameScene
         public string SlimeKey => slimeKey;
         public bool IsMaxLv => dataContext.gameData.maxLv == lv.Value;
         public bool IsRemovable => true;
-        public int RemoveCost => SlimeData.cost * (int)Mathf.Pow(2, lv.Value - 1);
-        public string RemoveExplain => $"판매: {RemoveCost}";
+        public float RemoveCost => SlimeData.cost * dataContext.gameData.sellReceiveRatio * Mathf.Pow(2, lv.Value - 1);
+        public string RemoveExplain => $"판매: +{RemoveCost}<sprite=\"coin-slime\" name=\"coin-slime\">";
         public SkillBase Skill => skill;
+
         //method
         protected override void Initialize()
         {
@@ -202,6 +203,11 @@ namespace Game.GameScene
         public void OnRemove()
         {
             slimeManager.SellSlime(xy);
+        }
+
+        private void OnDestroy()
+        {
+            slimeManager.Slimes.Remove(this);
         }
     }
 }
