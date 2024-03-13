@@ -54,8 +54,9 @@ namespace Game.Services
             
             if (setting.loadScene != null)
                 await setting.loadScene.Invoke();
-            await UniTask.Delay(TimeSpan.FromSeconds(1.5f));
 
+            await UniTask.DelayFrame(1);
+            
             blinder.DOColor(default, 0.75f).SetUpdate(true);
             await UniTask.Delay(TimeSpan.FromSeconds(0.75f));
             blinder.gameObject.SetActive(false);

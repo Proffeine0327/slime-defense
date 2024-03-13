@@ -33,6 +33,11 @@ namespace Game.Services
             select.Value = grids.GetGrid(xy).Slime;
         }
 
+        public void Remove()
+        {
+            select.Value.OnRemove();
+        }
+
         public void OnPointerClick(PointerEventData eventData)
         {
             Select(null);

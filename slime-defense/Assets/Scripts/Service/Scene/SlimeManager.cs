@@ -13,6 +13,7 @@ namespace Game.Services
         //services
         private Grids grids => ServiceProvider.Get<Grids>();
         private DataContext dataContext => ServiceProvider.Get<DataContext>();
+        private SelectManager selectManager => ServiceProvider.Get<SelectManager>();
 
         public event Action OnUnitUpdate;
 
@@ -106,7 +107,9 @@ namespace Game.Services
         public void SellSlime(Vector2Int xy)
         {
             var grid = grids.GetGrid(xy);
+            Destroy(grid.Slime.gameObject);
             grid.Slime = null;
+            selectManager.Select(null);
         }
     }
 }

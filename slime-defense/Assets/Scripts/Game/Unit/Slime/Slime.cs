@@ -44,7 +44,7 @@ namespace Game.GameScene
         public bool IsRemovable => true;
         public int RemoveCost => SlimeData.cost * (int)Mathf.Pow(2, lv.Value - 1);
         public string RemoveExplain => $"판매: {RemoveCost}";
-
+        public SkillBase Skill => skill;
         //method
         protected override void Initialize()
         {
