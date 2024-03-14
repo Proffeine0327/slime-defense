@@ -11,13 +11,12 @@ namespace Game.Services
     {
         //service
         private DataContext dataContext => ServiceProvider.Get<DataContext>();
-        private ResourceLoader resourceLoader => ServiceProvider.Get<ResourceLoader>();
         private ArgumentManager argumentManager => ServiceProvider.Get<ArgumentManager>();
 
         //member
-        private bool isGameStarted;
-        private bool isGameEnd;
         private bool isWaveStart;
+        private bool isGameClear;
+        private bool isGameLose;
         private HashSet<Enemy> enemies = new();
         private Dictionary<string, Queue<Enemy>> enemyPools = new();
 
@@ -26,6 +25,8 @@ namespace Game.Services
         private int maxWave => dataContext.stageDatas[saveData.stage].waveDatas.Count;
 
         public bool IsWaveStart => isWaveStart;
+        public bool IsGameClear => isGameClear;
+        public bool IsGameLose => isGameLose;
 
         public event Action OnWaveStart;
         public event Action OnWaveEnd;
@@ -44,6 +45,15 @@ namespace Game.Services
         public void StartWave()
         {
             isWaveStart = true;
+        }
+
+        private void Update()
+        {
+            if(dataContext.userData.saveData.life <= 0)
+            {
+                Time.timeScale = 0;
+                isGameLose = true;
+            }
         }
 
         private IEnumerator GameRoutine()
@@ -74,7 +84,7 @@ namespace Game.Services
                 enemyPools.Add(data.Key, queue);
             }
 
-            isGameStarted = true;
+            // isGameStarted = true;
 
             yield return null;
             while (true)
@@ -87,7 +97,7 @@ namespace Game.Services
 
                 if (!saveData.isInfinity && saveData.wave == maxWave)
                 {
-                    isGameEnd = true;
+                    isGameClear = true;
                     Time.timeScale = 0;
                     // gameClear.Open();
                     yield break;

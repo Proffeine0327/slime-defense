@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using Game.Services;
+using DG.Tweening;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,31 +7,21 @@ namespace Game.UI.GameScene
 {
     public class LifeDisplayer : MonoBehaviour
     {
-        //service
-        private DataContext dataContext => ServiceProvider.Get<DataContext>();
+        [SerializeField] private float size;
 
-        [SerializeField] private Image heartPrefab;
+        public ReactiveProperty<bool> IsDisplay = new();
 
-        private List<Image> heart = new();
+        private RectTransform rectTransform => transform as RectTransform;
 
-        private void Start()
+        private void Awake()
         {
-            dataContext.userData.saveData
-                .ObserveEveryValueChanged(s => s.life)
-                .Pairwise()
-                .Subscribe(p =>
+            IsDisplay
+                .Subscribe(b =>
                 {
-                    var pre = p.Previous;
-                    var cur = p.Current;
-
-                    if(cur < pre) //hp down
-                    {
-
-                    }
-                    else
-                    {
-                        
-                    }
+                    DOTween.Kill(transform);
+                    rectTransform
+                        .DOSizeDelta(b ? Vector2.one * size : Vector2.zero, 0.5f)
+                        .SetEase(b ? Ease.OutQuart : Ease.InQuart);
                 });
         }
     }
