@@ -47,7 +47,7 @@ namespace Game.GameScene
         public void Display(GridType type)
         {
             meshRenderer.sharedMaterial =
-                type == gridType ?
+                type == gridType && !HasObstacle?
                 resourceLoader.gridPlaceableMaterial :
                 resourceLoader.gridUnplaceableMaterial;
         }

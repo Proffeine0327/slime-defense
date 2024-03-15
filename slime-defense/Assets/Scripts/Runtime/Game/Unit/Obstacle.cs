@@ -18,12 +18,13 @@ namespace Game.GameScene
         protected override Stats BaseStat => maxStats;
 
         public int Lv => 1;
-        public bool IsRemovable => !endurance.removing;
-        public float RemoveCost => cost;
+        public bool IsRemovable => dataContext.userData.saveData.money >= cost && !endurance.removing;
+        public float RemoveCost => -cost;
         public string RemoveExplain => $"제거: {RemoveCost}<sprite=\"coin-slime\" name=\"coin-slime\">";
         public Sprite Icon => null;
         public Stats DisplayStat => maxStats;
         public SkillBase Skill => skill;
+        public bool IsSelected => ReferenceEquals(this, selectManager.CurrentSelect);
 
         private void Start()
         {
@@ -45,7 +46,6 @@ namespace Game.GameScene
         public void OnRemove()
         {
             endurance.removing = true;
-            dataContext.userData.saveData.money -= cost;
         }
 
         public void OnPointerClick(PointerEventData eventData)

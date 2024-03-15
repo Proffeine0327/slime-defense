@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 namespace Game.UI.GameScene
 {
-    [ExecuteAlways]
     public class LifeContainer : MonoBehaviour
     {
         //service

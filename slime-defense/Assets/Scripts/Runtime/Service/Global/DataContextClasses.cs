@@ -244,9 +244,9 @@ namespace Game.Services
         public int stage;
         public bool isInfinity;
         public int wave = 1;
-        public int money = 10000;
         public int life;
         public int killAmount;
+        public float money = 10000;
         public float playTime;
         public string[] deck;
         public string[] arguments;

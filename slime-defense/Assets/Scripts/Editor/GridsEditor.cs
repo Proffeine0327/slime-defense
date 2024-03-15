@@ -6,7 +6,7 @@ using Game.GameScene;
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(Grids))]
+[CustomEditor(typeof(Game.Services.Grids))]
 public class GridsEditor : Editor
 {
     public override void OnInspectorGUI()
@@ -17,7 +17,7 @@ public class GridsEditor : Editor
             var xysizevector = xysize.vector2IntValue;
             GridSettingEditorWindow.ShowWindow(xysizevector, (material, states) =>
             {
-                var comp = (target as Grids);
+                var comp = target as Game.Services.Grids;
                 var cols = comp.Arrays;
 
                 for (int i = cols.Count - 1; i >= 0; i--)
@@ -35,7 +35,7 @@ public class GridsEditor : Editor
                     {
                         var obj = GameObject.CreatePrimitive(PrimitiveType.Plane);
                         obj.transform.localScale = Vector3.one * 0.095f;
-                        obj.transform.SetParent((target as Grids).transform);
+                        obj.transform.SetParent((target as Game.Services.Grids).transform);
                         obj.transform.localPosition = new Vector3(x, 0, y);
                         obj.name = $"Grid ({x},{y})";
 
@@ -56,7 +56,7 @@ public class GridsEditor : Editor
         }
         if (GUILayout.Button("Clear"))
         {
-            var comp = target as Grids;
+            var comp = target as Game.Services.Grids;
             var cols = comp.Arrays;
             for (int i = cols.Count - 1; i >= 0; i--)
             {

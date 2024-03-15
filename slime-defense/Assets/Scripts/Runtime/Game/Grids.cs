@@ -3,16 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using NaughtyAttributes;
 using UnityEngine;
+using Game.GameScene;
 
-namespace Game.GameScene
+namespace Game.Services
 {
     public class Grids : MonoBehaviour
     {
         [Serializable]
         public class GridArray
         {
-            [SerializeField] private List<Grid> grids = new List<Grid>();
-            public List<Grid> Grids => grids;
+            [SerializeField] private List<GameScene.Grid> grids = new List<GameScene.Grid>();
+            public List<GameScene.Grid> Grids => grids;
         }
 
         [SerializeField] private Vector2Int xySize;
@@ -21,24 +22,24 @@ namespace Game.GameScene
         public Vector2Int MapSize => xySize;
         public List<GridArray> Arrays => arrays;
 
-        public Grid GetGrid(Vector2Int xy)
+        public GameScene.Grid GetGrid(Vector2Int xy)
             => GetGrid(xy.x, xy.y);
 
-        public Grid GetGrid(int x, int y)
+        public GameScene.Grid GetGrid(int x, int y)
             => arrays[y].Grids[x];
 
-        public List<Grid> GetGrids()
+        public List<GameScene.Grid> GetGrids()
         {
-            var list = new List<Grid>();
+            var list = new List<GameScene.Grid>();
             foreach (var a in arrays) foreach (var grid in a.Grids)
                     list.Add(grid);
 
             return list;
         }
 
-        public List<Grid> GetGrids(Func<Grid, bool> criteria)
+        public List<GameScene.Grid> GetGrids(Func<GameScene.Grid, bool> criteria)
         {
-            var list = new List<Grid>();
+            var list = new List<GameScene.Grid>();
             foreach (var a in arrays) foreach (var grid in a.Grids)
                     if (criteria(grid)) list.Add(grid);
 

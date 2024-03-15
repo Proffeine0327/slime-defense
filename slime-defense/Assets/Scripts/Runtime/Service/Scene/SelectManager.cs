@@ -9,6 +9,7 @@ namespace Game.Services
     public class SelectManager : MonoBehaviour, IPointerClickHandler
     {
         //services
+        private DataContext dataContext => ServiceProvider.Get<DataContext>();
         private Grids grids => ServiceProvider.Get<Grids>();
 
         private ReactiveProperty<ISelectable> select = new();
@@ -35,6 +36,7 @@ namespace Game.Services
 
         public void Remove()
         {
+            dataContext.userData.saveData.money += select.Value.RemoveCost;
             select.Value.OnRemove();
         }
 

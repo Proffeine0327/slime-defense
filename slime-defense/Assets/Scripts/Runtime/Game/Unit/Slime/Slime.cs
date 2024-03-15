@@ -43,7 +43,7 @@ namespace Game.GameScene
         public bool IsMaxLv => dataContext.gameData.maxLv == lv.Value;
         public bool IsRemovable => true;
         public float RemoveCost => SlimeData.cost * dataContext.gameData.sellReceiveRatio * Mathf.Pow(2, lv.Value - 1);
-        public string RemoveExplain => $"판매: +{RemoveCost}<sprite=\"coin-slime\" name=\"coin-slime\">";
+        public string RemoveExplain => $"판매: {RemoveCost}<sprite=\"coin-slime\" name=\"coin-slime\">";
         public SkillBase Skill => skill;
 
         //method

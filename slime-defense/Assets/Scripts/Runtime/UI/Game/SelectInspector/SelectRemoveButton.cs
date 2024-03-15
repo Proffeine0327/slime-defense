@@ -12,6 +12,7 @@ namespace Game.UI.GameScene
     {
         //service
         private SelectManager selectManager => ServiceProvider.Get<SelectManager>();
+        private GameManager gameManager => ServiceProvider.Get<GameManager>();
 
         [SerializeField] private TextMeshProUGUI text;
         private Button button;
@@ -29,7 +30,7 @@ namespace Game.UI.GameScene
             if(selectManager.CurrentSelect == null) return;
 
             text.text = selectManager.CurrentSelect.RemoveExplain;
-            button.interactable = selectManager.CurrentSelect.IsRemovable;
+            button.interactable = selectManager.CurrentSelect.IsRemovable && !gameManager.IsWaveStart;
         }
     }
 }
