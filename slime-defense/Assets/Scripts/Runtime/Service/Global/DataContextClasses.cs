@@ -194,6 +194,13 @@ namespace Game.Services
         public bool[] unlockInfModes = new[] { false };
         public SaveData saveData = new();
 
+        public void Save()
+        {
+            var json = JsonUtility.ToJson(this);
+            PlayerPrefs.SetString("userdata", json);
+            PlayerPrefs.Save();
+        }
+
         public static UserData Load()
         {
             var dataContext = ServiceProvider.Get<DataContext>();
@@ -236,7 +243,7 @@ namespace Game.Services
     {
         public int stage;
         public bool isInfinity;
-        public int wave;
+        public int wave = 1;
         public int money = 10000;
         public int life;
         public int killAmount;

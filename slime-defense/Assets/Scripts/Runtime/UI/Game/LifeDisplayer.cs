@@ -21,7 +21,8 @@ namespace Game.UI.GameScene
                     DOTween.Kill(transform);
                     rectTransform
                         .DOSizeDelta(b ? Vector2.one * size : Vector2.zero, 0.5f)
-                        .SetEase(b ? Ease.OutQuart : Ease.InQuart);
+                        .SetEase(b ? Ease.OutQuart : Ease.InQuart)
+                        .SetUpdate(true);
                 });
         }
     }

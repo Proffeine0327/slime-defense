@@ -24,6 +24,14 @@ namespace Game.GameScene
         public Vector2Int XY => xy;
         public GridType Type => gridType;
         public Slime Slime { get; set; }
+        public bool HasObstacle
+        {
+            get => Physics.CheckBox(
+                transform.position,
+                Vector3.one / 2,
+                Quaternion.identity,
+                LayerMask.GetMask("Obstacle"));
+        }
 
         public void Init(GridType type, Vector2Int xy)
         {

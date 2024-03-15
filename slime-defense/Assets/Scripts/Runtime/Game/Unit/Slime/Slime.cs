@@ -34,7 +34,7 @@ namespace Game.GameScene
         private SlimeData SlimeData => dataContext.slimeDatas[slimeKey];
         private bool IsSelected => ReferenceEquals(this, selectManager.CurrentSelect);
 
-        protected override Stats BaseStats => SlimeData.stats[lv.Value - 1];
+        protected override Stats BaseStat => SlimeData.stats[lv.Value - 1];
 
         public int Lv => lv.Value;
         public Stats DisplayStat => maxStats;
@@ -50,7 +50,6 @@ namespace Game.GameScene
         protected override void Initialize()
         {
             base.Initialize();
-            Debug.Log("Slime Start");
 
             animator = new(this);
             attacker = new(this);
@@ -65,8 +64,7 @@ namespace Game.GameScene
             lv.Subscribe(x =>
             {
                 if (x <= 0) return;
-                modifier.CalculateAll(maxStats, BaseStats);
-                Debug.Log(curStats.ToString());
+                modifier.CalculateAll(maxStats, BaseStat);
             });
         }
 

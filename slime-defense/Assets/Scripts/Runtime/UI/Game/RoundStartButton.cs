@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Game.Services;
+using UniRx;
 
 namespace Game.UI.GameScene
 {
@@ -16,7 +17,8 @@ namespace Game.UI.GameScene
         private void Start()
         {
             button = GetComponent<Button>();
-            button.onClick.AddListener(() => gameManager.StartWave());
+            button.OnClickAsObservable().Subscribe(_ => gameManager.StartWave());
+            gameManager.ObserveEveryValueChanged(g => g.IsWaveStart).Subscribe(b => button.interactable = !b);
         }
     }
 }

@@ -22,14 +22,14 @@ namespace Game.UI.GameScene
             button
                 .OnClickAsObservable()
                 .Subscribe(_ => selectManager.Remove());
-            selectManager.OnSelect += select =>
-            {
-                if (select != null)
-                {
-                    text.text = select.RemoveExplain;
-                    button.interactable = select.IsRemovable;
-                }
-            };
+        }
+
+        private void Update()
+        {
+            if(selectManager.CurrentSelect == null) return;
+
+            text.text = selectManager.CurrentSelect.RemoveExplain;
+            button.interactable = selectManager.CurrentSelect.IsRemovable;
         }
     }
 }

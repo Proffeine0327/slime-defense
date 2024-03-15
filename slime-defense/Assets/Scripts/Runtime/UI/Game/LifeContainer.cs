@@ -26,7 +26,12 @@ namespace Game.UI.GameScene
                 .Subscribe(l =>
                 {
                     int i = 1;
-                    while (l - 1 >= lifes.Count) lifes.Add(Instantiate(lifePrefab, transform));
+                    Debug.Log(l);
+                    while (l - 1 >= lifes.Count)
+                    {
+                        Debug.Log(lifes.Count);
+                        lifes.Add(Instantiate(lifePrefab, transform));
+                    }
 
                     for (; i <= l; i++) lifes[i - 1].IsDisplay.Value = true;
                     for (; i <= lifes.Count; i++) lifes[i - 1].IsDisplay.Value = false;

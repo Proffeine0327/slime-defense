@@ -167,20 +167,15 @@ namespace Game.GameScene
 
             public void CalculateAll(Stats targetStats, Stats baseStats)
             {
-                Debug.Log("Calculate All");
-                Debug.Log(baseStats.ToString());
-                Debug.Log(targetStats.ToString());
                 targetStats.ChangeFrom(baseStats);
                 foreach (var v in GetPercentValues())
                     targetStats.ModifyStat(v.Key, x => x + x * v.Value);
                 foreach (var v in GetAddValues())
                     targetStats.ModifyStat(v.Key, x => x + v.Value);
-                Debug.Log(targetStats.ToString());
             }
 
             public void Calculate(Key key, Stats targetStats, Stats baseStats)
             {
-                Debug.Log($"calculate : {GetPercentValues()}");
                 targetStats.ModifyStat(key, x => baseStats.GetStat(key) * (percentValues.GetStat(key) + 1));
                 targetStats.ModifyStat(key, x => x + addValues.GetStat(key));
             }

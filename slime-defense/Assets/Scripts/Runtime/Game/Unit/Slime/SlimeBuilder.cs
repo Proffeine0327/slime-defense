@@ -24,7 +24,6 @@ namespace Game.GameScene
 
             public Slime BuildOnlyData()
             {
-                Debug.Log(dataContext.slimeDatas[slimeKey].skillKey);
                 var slime = Instantiate(resourceLoader.slimePrefabs[slimeKey]);
                 slime.slimeKey = slimeKey;
                 slime.Initialize();

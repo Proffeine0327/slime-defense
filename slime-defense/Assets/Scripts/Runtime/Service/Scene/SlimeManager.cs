@@ -32,7 +32,7 @@ namespace Game.Services
             var toUnit = grids.GetGrid(to).Slime;
 
             if (grids.GetGrid(to).Type != dataContext.slimeDatas[fromUnit.SlimeKey].grid) return false;
-            // if (grids.GetGrid(to).HasObstacle) return false;
+            if (grids.GetGrid(to).HasObstacle) return false;
 
             if (toUnit)
             {

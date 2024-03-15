@@ -7,7 +7,7 @@ namespace Game.GameScene
 {
     public abstract partial class UnitBase : MonoBehaviour
     {
-        protected abstract Stats BaseStats { get; }
+        protected abstract Stats BaseStat { get; }
 
         public Stats maxStats;
         public Stats curStats;
@@ -33,7 +33,7 @@ namespace Game.GameScene
                 curStats.ModifyStat(key, x => Mathf.Clamp(x, float.MinValue, maxStats.GetStat(key)));
             };
 
-            modifier.OnValueChange += key => modifier.Calculate(key, maxStats, BaseStats);
+            modifier.OnValueChange += key => modifier.Calculate(key, maxStats, BaseStat);
         }
     }
 }

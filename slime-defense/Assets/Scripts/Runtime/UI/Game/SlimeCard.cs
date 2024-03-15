@@ -42,7 +42,6 @@ namespace Game.UI.GameScene
 
             data = new Slime.Builder(slimeKey).BuildOnlyData();
             data.transform.SetParent(transform);
-            Debug.Log(data.transform.parent);
 
             background.color = dataContext.tierDatas[slimedata.tier].color;
             border.color = dataContext.tierDatas[slimedata.tier].color;

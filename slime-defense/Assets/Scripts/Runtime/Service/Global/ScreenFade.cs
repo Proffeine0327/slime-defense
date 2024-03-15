@@ -47,18 +47,18 @@ namespace Game.Services
         {
             blinder.gameObject.SetActive(true);
             blinder.DOColor(Color.black, 0.75f).SetUpdate(true);
-            await UniTask.Delay(TimeSpan.FromSeconds(1.5f));
+            await UniTask.Delay(TimeSpan.FromSeconds(1.5f), DelayType.UnscaledDeltaTime);
 
             if (setting.unloadScene != null)
                 await setting.unloadScene.Invoke(SceneManager.GetActiveScene().name);
             
             if (setting.loadScene != null)
                 await setting.loadScene.Invoke();
+            Time.timeScale = 1;
 
             await UniTask.DelayFrame(1);
-            
             blinder.DOColor(default, 0.75f).SetUpdate(true);
-            await UniTask.Delay(TimeSpan.FromSeconds(0.75f));
+            await UniTask.Delay(TimeSpan.FromSeconds(0.75f), DelayType.UnscaledDeltaTime);
             blinder.gameObject.SetActive(false);
         }
     }

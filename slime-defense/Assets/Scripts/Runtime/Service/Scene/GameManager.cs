@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Game.GameScene;
+using UnityEngine.SceneManagement;
+using Cysharp.Threading.Tasks;
 
 namespace Game.Services
 {
@@ -12,11 +14,12 @@ namespace Game.Services
         //service
         private DataContext dataContext => ServiceProvider.Get<DataContext>();
         private ArgumentManager argumentManager => ServiceProvider.Get<ArgumentManager>();
+        private ScreenFade screenFade => ServiceProvider.Get<ScreenFade>();
 
         //member
         private bool isWaveStart;
         private bool isGameClear;
-        private bool isGameLose;
+        private bool isGameOver;
         private HashSet<Enemy> enemies = new();
         private Dictionary<string, Queue<Enemy>> enemyPools = new();
 
@@ -26,7 +29,7 @@ namespace Game.Services
 
         public bool IsWaveStart => isWaveStart;
         public bool IsGameClear => isGameClear;
-        public bool IsGameLose => isGameLose;
+        public bool IsGameOver => isGameOver;
 
         public event Action OnWaveStart;
         public event Action OnWaveEnd;
@@ -42,6 +45,19 @@ namespace Game.Services
             StartCoroutine(GameRoutine());
         }
 
+        public void SaveGame()
+        {
+            
+            ExitGame();
+        }
+
+        public void ExitGame()
+        {
+            screenFade
+                .Fade()
+                .LoadScene(async() => await SceneManager.LoadSceneAsync("Lobby"));
+        }
+
         public void StartWave()
         {
             isWaveStart = true;
@@ -52,7 +68,7 @@ namespace Game.Services
             if(dataContext.userData.saveData.life <= 0)
             {
                 Time.timeScale = 0;
-                isGameLose = true;
+                isGameOver = true;
             }
         }
 
@@ -92,10 +108,10 @@ namespace Game.Services
                 Debug.Log(saveData.stage);
                 var stageData = dataContext.stageDatas[saveData.stage];
                 Debug.Log(maxWave);
-                Debug.Log(saveData.wave);
-                var waveData = stageData.waveDatas[saveData.wave % maxWave];
+                Debug.Log(saveData.wave - 1);
+                var waveData = stageData.waveDatas[(saveData.wave - 1) % maxWave];
 
-                if (!saveData.isInfinity && saveData.wave == maxWave)
+                if (!saveData.isInfinity && (saveData.wave - 1) == maxWave)
                 {
                     isGameClear = true;
                     Time.timeScale = 0;
@@ -124,7 +140,7 @@ namespace Game.Services
 
                 yield return new WaitForSeconds(1f);
 
-                var nextWaveData = stageData.waveDatas[saveData.wave % maxWave];
+                var nextWaveData = stageData.waveDatas[(saveData.wave - 1) % maxWave];
                 if (nextWaveData.argument) argumentManager.DisplayArgument();
 
                 OnWaveEnd?.Invoke();
@@ -148,7 +164,7 @@ namespace Game.Services
             for (int i = 0; i < data.count; i++)
             {
                 enemylist[i].gameObject.SetActive(true);
-                enemylist[i].Appeare((saveData.wave / maxWave) + 1);
+                enemylist[i].Appeare(((saveData.wave - 1) / maxWave) + 1);
                 yield return delay;
             }
         }

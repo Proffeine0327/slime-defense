@@ -20,16 +20,11 @@ namespace Game.GameScene
         {
             key = "Game.GameScene." + key;
             if (string.IsNullOrEmpty(key))
-            {
-                Debug.Log("EmptyKey");
                 return new SkillBase(caster);
-            }
             var t = Type.GetType(key);
             if (t == null)
-            {
-                Debug.Log("HasNotType");
                 return new SkillBase(caster);
-            }
+            
             return Activator.CreateInstance(t, args: caster) as SkillBase;
         }
 
@@ -43,7 +38,7 @@ namespace Game.GameScene
             enemy.curStats.ModifyStat(Stats.Key.Hp, x => x - caster.curStats.GetStat(Stats.Key.AttackDamage));
         }
 
-        public virtual void OnRoundEnd()
+        public virtual void OnWaveEnd()
         {
 
         }
@@ -57,12 +52,12 @@ namespace Game.GameScene
         {
             this.caster = caster;
             OnAdd();
-            gameManager.OnWaveEnd += OnRoundEnd;
+            gameManager.OnWaveEnd += OnWaveEnd;
         }
 
         ~SkillBase()
         {
-            gameManager.OnWaveEnd -= OnRoundEnd;
+            gameManager.OnWaveEnd -= OnWaveEnd;
         }
     }
 }

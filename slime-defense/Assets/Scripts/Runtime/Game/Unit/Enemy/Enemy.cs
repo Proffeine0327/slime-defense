@@ -14,7 +14,7 @@ namespace Game.GameScene
         private string key;
         private Animator animator;
 
-        protected override Stats BaseStats => dataContext.enemyDatas[key].@base;
+        protected override Stats BaseStat => dataContext.enemyDatas[key].@base;
         public bool IsDisabled { get; private set; }
         public float Distance { get; private set; }
 
@@ -38,7 +38,7 @@ namespace Game.GameScene
         public void Appeare(int lv)
         {
             Debug.Log($"lv: {lv}");
-            maxStats.ChangeFrom(BaseStats);
+            maxStats.ChangeFrom(BaseStat);
             effects.AddOrChange("EnemyUpgrade", new EnemyUpgradeEffect() { key = key, lv = lv });
             curStats.ChangeFrom(maxStats);
             StartCoroutine(MovePath(0));
