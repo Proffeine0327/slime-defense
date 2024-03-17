@@ -6,6 +6,7 @@ using UnityEngine;
 using Game.GameScene;
 using UnityEngine.SceneManagement;
 using Cysharp.Threading.Tasks;
+using Unity.VisualScripting;
 
 namespace Game.Services
 {
@@ -15,21 +16,25 @@ namespace Game.Services
         private DataContext dataContext => ServiceProvider.Get<DataContext>();
         private ArgumentManager argumentManager => ServiceProvider.Get<ArgumentManager>();
         private ScreenFade screenFade => ServiceProvider.Get<ScreenFade>();
+        private SlimeManager slimeManager => ServiceProvider.Get<SlimeManager>();
+        private ObstacleManager obstacleManager => ServiceProvider.Get<ObstacleManager>();
 
         //member
-        private bool isWaveStart;
+        [SerializeField] private Obstacle[] obstacles;
+
+        private SaveData saveData;
+        private bool isWaveStarted;
         private bool isGameClear;
         private bool isGameOver;
         private HashSet<Enemy> enemies = new();
         private Dictionary<string, Queue<Enemy>> enemyPools = new();
 
         //property
-        private SaveData saveData => dataContext.userData.saveData;
-        private int maxWave => dataContext.stageDatas[saveData.stage].waveDatas.Count;
-
-        public bool IsWaveStart => isWaveStart;
+        public SaveData SaveData => saveData;
+        public bool IsWaveStart => isWaveStarted;
         public bool IsGameClear => isGameClear;
         public bool IsGameOver => isGameOver;
+        public int MaxWave => dataContext.stageDatas[saveData.stage].waveDatas.Count;
 
         public event Action OnWaveStart;
         public event Action OnWaveEnd;
@@ -38,34 +43,65 @@ namespace Game.Services
         private void Awake()
         {
             ServiceProvider.Register(this);
+            saveData = dataContext.userData.saveData.Clone();
         }
 
         private void Start()
         {
+            if (saveData.isNewGame)
+            {
+                saveData.isNewGame = false;
+                argumentManager.Initialize();
+                slimeManager.Initialize();
+                obstacleManager.Initialize();
+            }
+            else
+            {
+                argumentManager.Load(saveData.arguments);
+                slimeManager.Load(saveData.slimes);
+                obstacleManager.Load(saveData.obstacles);
+            }
             StartCoroutine(GameRoutine());
         }
-
-        public void SaveGame()
+        
+        public void RemoveGame()
         {
-            
+            dataContext.userData.saveData = null;
             ExitGame();
+        }
+
+        public void TrySaveGame()
+        {
+            if(isWaveStarted) return;
+
+            SaveGame();
+        }
+
+        private void SaveGame()
+        {
+            saveData.arguments = argumentManager.Save();
+            saveData.slimes = slimeManager.Save();
+            saveData.obstacles = obstacleManager.Save();
+            dataContext.userData.Save();
+
+            dataContext.userData.saveData = saveData.Clone();
         }
 
         public void ExitGame()
         {
             screenFade
                 .Fade()
-                .LoadScene(async() => await SceneManager.LoadSceneAsync("Lobby"));
+                .LoadScene(async () => await SceneManager.LoadSceneAsync("Lobby"));
         }
 
         public void StartWave()
         {
-            isWaveStart = true;
+            isWaveStarted = true;
         }
 
         private void Update()
         {
-            if(dataContext.userData.saveData.life <= 0)
+            if (saveData.life <= 0)
             {
                 Time.timeScale = 0;
                 isGameOver = true;
@@ -86,12 +122,12 @@ namespace Game.Services
                     {
                         enemyPools[key].Enqueue(enemy);
                         enemies.Remove(enemy);
+
                     };
                     enemy.OnArrive += () =>
                     {
                         enemyPools[key].Enqueue(enemy);
                         enemies.Remove(enemy);
-                        dataContext.userData.saveData.life -= 1;
                     };
                     queue.Enqueue(enemy);
                     yield return null;
@@ -105,13 +141,10 @@ namespace Game.Services
             yield return null;
             while (true)
             {
-                Debug.Log(saveData.stage);
                 var stageData = dataContext.stageDatas[saveData.stage];
-                Debug.Log(maxWave);
-                Debug.Log(saveData.wave - 1);
-                var waveData = stageData.waveDatas[(saveData.wave - 1) % maxWave];
+                var waveData = stageData.waveDatas[(saveData.wave - 1) % MaxWave];
 
-                if (!saveData.isInfinity && (saveData.wave - 1) == maxWave)
+                if (!saveData.isInfinity && (saveData.wave - 1) == MaxWave)
                 {
                     isGameClear = true;
                     Time.timeScale = 0;
@@ -119,7 +152,8 @@ namespace Game.Services
                     yield break;
                 }
 
-                yield return new WaitUntil(() => isWaveStart);
+                yield return new WaitUntil(() => isWaveStarted);
+                SaveGame();
 
                 enemies.Clear();
                 Debug.Log("Clear");
@@ -134,14 +168,18 @@ namespace Game.Services
 
                 yield return new WaitUntil(() => enemies.Count == 0);
 
-                dataContext.userData.saveData.money += stageData.gainMoney;
-                isWaveStart = false;
+                saveData.money += stageData.gainMoney;
+                isWaveStarted = false;
                 saveData.wave++;
 
                 yield return new WaitForSeconds(1f);
 
-                var nextWaveData = stageData.waveDatas[(saveData.wave - 1) % maxWave];
-                if (nextWaveData.argument) argumentManager.DisplayArgument();
+                var nextWaveData = stageData.waveDatas[(saveData.wave - 1) % MaxWave];
+                if (nextWaveData.argument)
+                {
+                    argumentManager.DisplayArgument();
+                    yield return new WaitUntil(() => argumentManager.IsSelected);
+                }
 
                 OnWaveEnd?.Invoke();
             }
@@ -164,7 +202,7 @@ namespace Game.Services
             for (int i = 0; i < data.count; i++)
             {
                 enemylist[i].gameObject.SetActive(true);
-                enemylist[i].Appeare(((saveData.wave - 1) / maxWave) + 1);
+                enemylist[i].Appeare(((saveData.wave - 1) / MaxWave) + 1);
                 yield return delay;
             }
         }
@@ -172,7 +210,7 @@ namespace Game.Services
         private Dictionary<string, int> GetMaxEnemyCount()
         {
             var container = new Dictionary<string, int>();
-            foreach (var waveData in dataContext.stageDatas[saveData.wave].waveDatas)
+            foreach (var waveData in dataContext.stageDatas[saveData.stage].waveDatas)
             {
                 var waveEnemyMaxCount = new Dictionary<string, int>();
 

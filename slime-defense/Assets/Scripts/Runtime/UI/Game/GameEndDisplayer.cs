@@ -27,8 +27,6 @@ namespace Game.UI.GameScene
 
         //service
         private GameManager gameManager => ServiceProvider.Get<GameManager>();
-        private ScreenFade screenFade => ServiceProvider.Get<ScreenFade>();
-        private DataContext dataContext => ServiceProvider.Get<DataContext>();
 
         [SerializeField] private GameEndSignalTarget target;
         [SerializeField] private Image bg;
@@ -43,7 +41,7 @@ namespace Game.UI.GameScene
         {
             exit
                 .OnClickAsObservable()
-                .Subscribe(_ => gameManager.ExitGame());
+                .Subscribe(_ => gameManager.RemoveGame());
         }
 
         private void Update()
@@ -57,8 +55,8 @@ namespace Game.UI.GameScene
 
             isDisplayed = true;
 
-            killAmount.text = dataContext.userData.saveData.killAmount.ToString("#,##0");
-            wave.text = dataContext.userData.saveData.wave.ToString("#,##0");
+            killAmount.text = gameManager.SaveData.killAmount.ToString("#,##0");
+            wave.text = gameManager.SaveData.wave.ToString("#,##0");
 
             bg.color = default;
             foreach (var i in fadeInfos)
@@ -71,7 +69,7 @@ namespace Game.UI.GameScene
                 .OnStart(() => bg.gameObject.SetActive(true))
                 .Append(bg.DOColor(new Color(0, 0, 0, 0.5f), time).SetUpdate(true));
 
-            var fTime = time;
+            var fTime = 0f;
             foreach (var i in fadeInfos)
             {
                 switch (i.methodType)

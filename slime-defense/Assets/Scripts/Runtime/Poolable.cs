@@ -3,20 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game.Services;
 
-public class Poolable : MonoBehaviour
+namespace Game
 {
-    //services
-    private ObjectPool objectPool => ServiceProvider.Get<ObjectPool>();
-
-    private string key;
-
-    public void Initialize(string key)
+    public class Poolable : MonoBehaviour
     {
-        this.key = key;
-    }
+        //services
+        private ObjectPool objectPool => ServiceProvider.Get<ObjectPool>();
 
-    public void Pool()
-    {
-        objectPool.PoolObject(key, gameObject);
+        private string key;
+
+        public void Initialize(string key)
+        {
+            this.key = key;
+        }
+
+        public void Pool()
+        {
+            objectPool.PoolObject(key, gameObject);
+        }
     }
 }

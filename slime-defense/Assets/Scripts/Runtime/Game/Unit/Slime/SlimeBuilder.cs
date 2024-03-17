@@ -22,19 +22,6 @@ namespace Game.GameScene
                 this.slimeKey = slimeKey;
             }
 
-            public Slime BuildOnlyData()
-            {
-                var slime = Instantiate(resourceLoader.slimePrefabs[slimeKey]);
-                slime.slimeKey = slimeKey;
-                slime.Initialize();
-                slime.lv.Value = 1;
-                slime.skill = SkillBase.GetSkill(dataContext.slimeDatas[slimeKey].skillKey, slime);
-                slime.gameObject.SetActive(false);
-                slime.enabled = false;
-                slime.gameObject.name = "data";
-                return slime;
-            }
-
             public Builder SetPreview()
             {
                 preview = true;
@@ -64,6 +51,30 @@ namespace Game.GameScene
                 slime.skill = SkillBase.GetSkill(dataContext.slimeDatas[slimeKey].skillKey, slime);
                 slime.MoveTo(index);
 
+                return slime;
+            }
+
+            public Slime BuildOnlyData()
+            {
+                var slime = Instantiate(resourceLoader.slimePrefabs[slimeKey]);
+                slime.slimeKey = slimeKey;
+                slime.Initialize();
+                slime.lv.Value = 1;
+                slime.skill = SkillBase.GetSkill(dataContext.slimeDatas[slimeKey].skillKey, slime);
+                slime.gameObject.SetActive(false);
+                slime.enabled = false;
+                slime.gameObject.name = "data";
+                return slime;
+            }
+
+            public Slime BuildFromData(string json)
+            {
+                var slime = Instantiate(resourceLoader.slimePrefabs[slimeKey]);
+                slime.slimeKey = slimeKey;
+                slime.Initialize();
+                slime.skill = SkillBase.GetSkill(dataContext.slimeDatas[slimeKey].skillKey, slime);
+                slime.Load(json);
+                slime.enabled = true;
                 return slime;
             }
         }

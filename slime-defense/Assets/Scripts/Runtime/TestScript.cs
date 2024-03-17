@@ -1,21 +1,26 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Game.Services;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class TestScript : MonoBehaviour
 {
-    private ReactiveProperty<int> test = new();
+    //service
+    private GameManager gameManager => ServiceProvider.Get<GameManager>();
+    private SettingWindow settingManager => ServiceProvider.Get<SettingWindow>();
 
-    // private IEnumerator Start()
-    // {
-    //     var load = SceneManager.LoadSceneAsync("Lobby");
-    //     load.allowSceneActivation = false;
-    //     load.
-    //     yield return load;
-    //     Debug.Log("test");
-    // }
+    private void Start()
+    {
+        GetComponent<Button>()
+            .OnClickAsObservable()
+            .Subscribe(_ =>
+            {
+                gameManager.TrySaveGame();
+            });
+    }
 }

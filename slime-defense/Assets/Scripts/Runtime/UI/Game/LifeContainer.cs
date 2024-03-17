@@ -10,7 +10,7 @@ namespace Game.UI.GameScene
     public class LifeContainer : MonoBehaviour
     {
         //service
-        private DataContext dataContext => ServiceProvider.Get<DataContext>();
+        private GameManager gameManager => ServiceProvider.Get<GameManager>();
 
         [SerializeField] private LifeDisplayer lifePrefab;
         [SerializeField] private Vector2 offset;
@@ -20,7 +20,7 @@ namespace Game.UI.GameScene
 
         private void Start()
         {
-            dataContext.userData.saveData
+            gameManager.SaveData
                 .ObserveEveryValueChanged(s => s.life)
                 .Subscribe(l =>
                 {

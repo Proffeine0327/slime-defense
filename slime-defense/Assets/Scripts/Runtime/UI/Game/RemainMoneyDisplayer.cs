@@ -10,7 +10,7 @@ namespace Game.UI.GameScene
 public class RemainMoneyDisplayer : MonoBehaviour
 {
     //services
-    private DataContext dataContext => ServiceProvider.Get<DataContext>();
+    private GameManager gameManager => ServiceProvider.Get<GameManager>();
 
     private TextMeshProUGUI text;
 
@@ -18,7 +18,7 @@ public class RemainMoneyDisplayer : MonoBehaviour
     {
         text = GetComponent<TextMeshProUGUI>();
 
-        dataContext.userData.saveData
+        gameManager.SaveData
             .ObserveEveryValueChanged(s => s.money)
             .Subscribe(x => text.text = x.ToString("#,##0"));
     }

@@ -9,7 +9,7 @@ namespace Game.UI.GameScene
     public class SlimeCardContainer : MonoBehaviour
     {
         //service
-        private DataContext dataContext => ServiceProvider.Get<DataContext>();
+        private GameManager gameManager => ServiceProvider.Get<GameManager>();
 
         [Header("Card")]
         [SerializeField] private SlimeCard[] cards;
@@ -18,9 +18,9 @@ namespace Game.UI.GameScene
 
         private void Start()
         {
-            // foreach(var key in dataContext.userData.saveData.deck)
+            // foreach(var key in gameManager.SaveData.deck)
             for(int i = 0; i < cards.Length; i++)
-                cards[i].Init(dataContext.userData.saveData.deck[i]);
+                cards[i].Init(gameManager.SaveData.deck[i]);
         }
     }
 }

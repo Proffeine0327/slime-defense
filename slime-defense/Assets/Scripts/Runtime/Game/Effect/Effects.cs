@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Game.GameScene
 {
-    public partial class Effects
+    public partial class Effects : ISaveLoad
     {
         //serivces
         private GameManager gameManager => ServiceProvider.Get<GameManager>();
@@ -20,12 +20,10 @@ namespace Game.GameScene
         {
             if (!container.ContainsKey(effectKey))
             {
-                Debug.Log("Add");
                 container.Add(effectKey, effect);
             }
             else
             {
-                Debug.Log("Change");
                 container[effectKey].OnRemove();
                 container[effectKey] = effect;
             }
@@ -68,7 +66,30 @@ namespace Game.GameScene
         private void RoundEndEvent()
         {
             foreach (var c in container)
-                c.Value.OnRoundEnd();
+                c.Value.OnWaveEnd();
+        }
+
+        public string Save()
+        {
+            var effectDatas = new StringListWrapper();
+            foreach(var e in container)
+                effectDatas.datas.Add($"{e.Key}\'{e.GetType().FullName},{e.Value.Save()}");
+            return JsonUtility.ToJson(effectDatas);
+        }
+
+        public void Load(string data)
+        {
+            var effectDatas = JsonUtility.FromJson<StringListWrapper>(data);
+            foreach(var e in effectDatas.datas)
+            {
+                var key = e.Split('\'')[0];
+                var effectInfo = e.Split('\'')[1];
+                var effectType = Type.GetType(effectInfo.Split(',')[0]);
+                var effectJson = effectInfo.Split(',')[1];
+                var effect = (EffectBase)Activator.CreateInstance(effectType);
+                effect.Load(effectJson);
+                container.Add(key, effect);
+            }
         }
     }
 }

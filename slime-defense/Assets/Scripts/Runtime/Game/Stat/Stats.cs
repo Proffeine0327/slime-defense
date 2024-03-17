@@ -7,7 +7,7 @@ using System.Collections;
 
 namespace Game.GameScene
 {
-    public partial class Stats
+    public partial class Stats : ISaveLoad
     {
         public enum Key
         {
@@ -100,6 +100,28 @@ namespace Game.GameScene
             foreach (var stat in stats)
                 sb.Append(stat.ToString()).Append('\n');
             return sb.ToString();
+        }
+
+        public string Save()
+        {
+            var sb = new StringBuilder();
+            foreach(var stat in GetStats())
+                sb.Append($"{stat.Key}\'{stat.Value}").Append(',');
+            return sb.ToString();
+        }
+
+        public void Load(string data)
+        {            
+            var split = data.Split(',');
+            foreach(var s in split)
+            {
+                if(string.IsNullOrEmpty(s)) continue;
+                
+                var kvp = s.Split('\'');
+                var key = Enum.Parse<Key>(kvp[0]);
+                var value = float.Parse(kvp[1]);
+                AddStat(key, value);
+            }
         }
     }
 }

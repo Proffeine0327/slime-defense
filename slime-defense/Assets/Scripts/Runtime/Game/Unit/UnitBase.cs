@@ -6,7 +6,7 @@ using Game.Services;
 
 namespace Game.GameScene
 {
-    public abstract partial class UnitBase : MonoBehaviour
+    public abstract partial class UnitBase : MonoBehaviour, IInitialize
     {
         protected abstract Stats BaseStat { get; }
 
@@ -16,7 +16,7 @@ namespace Game.GameScene
         public Effects effects;
         public SkillBase skill;
 
-        protected virtual void Initialize()
+        public virtual void Initialize()
         {
             maxStats = new();
             curStats = new();

@@ -9,6 +9,7 @@ namespace Game.UI.GameScene
     {
         //serivce
         private SelectManager selectManager => ServiceProvider.Get<SelectManager>();
+        private DataContext dataContext => ServiceProvider.Get<DataContext>();
 
         private ISelectable target;
         private TextMeshProUGUI text;
@@ -22,7 +23,10 @@ namespace Game.UI.GameScene
         private void Update()
         {
             if (target != null)
-                text.text = $"Lv. {target.Lv}";
+            {
+                var lvStr = target.Lv == dataContext.gameData.maxLv ? "Max" : target.Lv.ToString();
+                text.text = $"Lv. {lvStr}";
+            }
         }
     }
 }

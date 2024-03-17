@@ -10,7 +10,7 @@ namespace Game.GameScene
 {
     public partial class Stats
     {
-        public class Modifier
+        public class Modifier : ISaveLoad
         {
             public class Info
             {
@@ -188,6 +188,45 @@ namespace Game.GameScene
                 sb.Append("add\n");
                 sb.Append(addValues.ToString());
                 return sb.ToString();
+            }
+
+            public string Save()
+            {
+                var casterData = new StringListWrapper();
+                foreach(var c in casterInfo)
+                {
+                    var infoData = new StringListWrapper();
+                    foreach(var i in c.Value as IDictionary<Key, Info>)
+                        infoData.datas.Add($"{i.Key}\'{i.Value.add.Value},{i.Value.percent.Value}");
+                    casterData.datas.Add($"{c.Key}\'{JsonUtility.ToJson(infoData)}");
+                }
+                return JsonUtility.ToJson(casterData);
+            }
+
+            public void Load(string data)
+            {
+                if(string.IsNullOrEmpty(data)) return;
+                var casterData = JsonUtility.FromJson<StringListWrapper>(data);
+                foreach(var c in casterData.datas)
+                {
+                    var caster = c[0..c.IndexOf('\'')];
+                    var infoJson = c[(c.IndexOf('\'')+1)..];
+                    var infoData = JsonUtility.FromJson<StringListWrapper>(infoJson);
+                    foreach(var i in infoData.datas)
+                    {
+                        var key = Enum.Parse<Key>(i[0..i.IndexOf('\'')]);
+                        var values = i[(i.IndexOf('\'')+1)..];
+                        var addValue = float.Parse(values.Split(',')[0]);
+                        var percentValue = float.Parse(values.Split(',')[1]);
+                        Set
+                        (
+                            caster,
+                            key,
+                            x => percentValue,
+                            x => addValue
+                        );
+                    }
+                }
             }
         }
     }

@@ -10,6 +10,7 @@ namespace Game.GameScene
         //services
         private Paths paths => ServiceProvider.Get<Paths>();
         private DataContext dataContext => ServiceProvider.Get<DataContext>();
+        private GameManager gameManager => ServiceProvider.Get<GameManager>();
 
         private string key;
         private Animator animator;
@@ -21,7 +22,7 @@ namespace Game.GameScene
         public event Action OnDeath;
         public event Action OnArrive;
 
-        protected override void Initialize()
+        public override void Initialize()
         {
             base.Initialize();
 
@@ -54,6 +55,8 @@ namespace Game.GameScene
             if (!IsDisabled && curStats.GetStat(Stats.Key.Hp) <= 0)
             {
                 IsDisabled = true;
+                gameManager.SaveData.killAmount++;
+                gameManager.SaveData.money += dataContext.enemyDatas[key].gainMoney;
                 animator.PlayDeath();
                 OnDeath?.Invoke();
                 this.Invoke(() =>
@@ -98,6 +101,7 @@ namespace Game.GameScene
 
             IsDisabled = true;
             gameObject.SetActive(false);
+            gameManager.SaveData.life--;
             OnArrive?.Invoke();
         }
     }

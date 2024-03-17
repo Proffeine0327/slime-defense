@@ -4,10 +4,11 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Game.Services;
+using System.Text;
 
 namespace Game.GameScene
 {
-    public partial class Slime : UnitBase, ISelectable, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public partial class Slime : UnitBase, ISelectable, ISaveLoad, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         //services
         private SlimeManager slimeManager => ServiceProvider.Get<SlimeManager>();
@@ -45,9 +46,10 @@ namespace Game.GameScene
         public float RemoveCost => SlimeData.cost * dataContext.gameData.sellReceiveRatio * Mathf.Pow(2, lv.Value - 1);
         public string RemoveExplain => $"판매: {RemoveCost}<sprite=\"coin-slime\" name=\"coin-slime\">";
         public SkillBase Skill => skill;
+        public Vector2Int XY => xy;
 
         //method
-        protected override void Initialize()
+        public override void Initialize()
         {
             base.Initialize();
 
@@ -206,6 +208,30 @@ namespace Game.GameScene
         private void OnDestroy()
         {
             slimeManager.Slimes.Remove(this);
+        }
+
+        public string Save()
+        {
+            var datas = new StringListWrapper();
+            datas.datas.Add(xy.Save());
+            datas.datas.Add(lv.Value.ToString());
+            datas.datas.Add(maxStats.Save());
+            datas.datas.Add(curStats.Save());
+            datas.datas.Add(modifier.Save());
+            datas.datas.Add(skill.Save());
+            return JsonUtility.ToJson(datas);
+        }
+
+        public void Load(string json)
+        {
+            var count = 0;
+            var datas = JsonUtility.FromJson<StringListWrapper>(json);
+            MoveTo(xy.Load(datas.datas[count++]));
+            lv.Value = int.Parse(datas.datas[count++]);
+            maxStats.Load(datas.datas[count++]);
+            curStats.Load(datas.datas[count++]);
+            modifier.Load(datas.datas[count++]);
+            skill.Load(datas.datas[count++]);
         }
     }
 }

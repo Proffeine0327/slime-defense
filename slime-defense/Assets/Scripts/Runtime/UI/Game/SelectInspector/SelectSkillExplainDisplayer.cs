@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.DeckSettingScene
 {
-    public class SelectAbilityExplainDisplayer : PopupTrigger
+    public class SelectSkillExplainDisplayer : PopupTrigger
     {
         //service
         private SelectManager selectManager => ServiceProvider.Get<SelectManager>();

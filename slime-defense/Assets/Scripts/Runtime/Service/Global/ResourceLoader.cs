@@ -17,6 +17,7 @@ namespace Game.Services
         [NonSerialized] public Dictionary<string, Sprite> slimeIcons = new();
         [NonSerialized] public Dictionary<string, Sprite> enemyIcons = new();
         [NonSerialized] public Dictionary<string, Sprite> skillIcons = new();
+        [NonSerialized] public Dictionary<string, Sprite> argumentIcons = new();
 
         private void Awake()
         {
@@ -40,6 +41,12 @@ namespace Game.Services
 
             foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Enemy/Icon"))
                 enemyIcons.Add(sprite.name, sprite);
+            
+            foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Skill/Icon"))
+                skillIcons.Add(sprite.name, sprite);
+
+            foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Argument/Icon"))
+                argumentIcons.Add(sprite.name, sprite);
         }
     }
 }

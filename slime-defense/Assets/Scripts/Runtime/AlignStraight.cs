@@ -2,33 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteAlways]
-public class AlignStraight : MonoBehaviour
+namespace Game
 {
-    public enum Direction { x, y, z }
-
-    [SerializeField] private float distance;
-    [SerializeField] private Direction direction;
-
-    private void Update()
+    [ExecuteAlways]
+    public class AlignStraight : MonoBehaviour
     {
-        var amount = transform.childCount;
-        var count = 0;
-        foreach (Transform t in transform)
+        public enum Direction { x, y, z }
+
+        [SerializeField] private float distance;
+        [SerializeField] private Direction direction;
+
+        private void Update()
         {
-            switch (direction)
+            var amount = transform.childCount;
+            var count = 0;
+            foreach (Transform t in transform)
             {
-                case Direction.x:
-                    t.localPosition = new Vector3(distance * count - (distance * (amount - 1) / 2), 0, 0);
-                    break;
-                case Direction.y:
-                    t.localPosition = new Vector3(0, distance * count - (distance * (amount - 1) / 2), 0);
-                    break;
-                case Direction.z:
-                    t.localPosition = new Vector3(0, 0, distance * count - (distance * (amount - 1) / 2));
-                    break;
+                switch (direction)
+                {
+                    case Direction.x:
+                        t.localPosition = new Vector3(distance * count - (distance * (amount - 1) / 2), 0, 0);
+                        break;
+                    case Direction.y:
+                        t.localPosition = new Vector3(0, distance * count - (distance * (amount - 1) / 2), 0);
+                        break;
+                    case Direction.z:
+                        t.localPosition = new Vector3(0, 0, distance * count - (distance * (amount - 1) / 2));
+                        break;
+                }
+                count++;
             }
-            count++;
         }
     }
 }

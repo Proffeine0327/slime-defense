@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game.GameScene;
 using System.Linq;
+using System.IO;
 
 namespace Game.Services
 {
@@ -60,6 +61,7 @@ namespace Game.Services
         public string name;
         public string explain;
         public string skillKey;
+        public int gainMoney;
         public Stats @base = new();
         public Stats percentage = new();
         public Stats add = new();
@@ -73,6 +75,7 @@ namespace Game.Services
             data.name = split[count++];
             data.explain = split[count++];
             data.skillKey = split[count++];
+            data.gainMoney = int.Parse(split[count++]);
             data.@base.AddStat(Stats.Key.Hp, float.Parse(split[count++]));
             data.@base.AddStat(Stats.Key.Speed, float.Parse(split[count++]));
             data.@base.AddStat(Stats.Key.AbilityPower, float.Parse(split[count++]));
@@ -190,13 +193,16 @@ namespace Game.Services
         public int hp = 999;
         public float money;
         public List<string> deck = new() { "GrassSlime", "DevilSlime", "AngleSlime", "IceSlime", "LavaSlime", "MetalSlime", };
-        public bool[] unlockStages = new[] { true };
-        public bool[] unlockInfModes = new[] { false };
-        public SaveData saveData = new();
+        public List<bool> unlockStages = new() { true };
+        public List<bool> unlockInfModes = new();
+        // public SaveData saveData;
+        public SaveData saveData;
+        public SettingData settingData = new();
 
         public void Save()
         {
             var json = JsonUtility.ToJson(this);
+            File.WriteAllText(Application.dataPath + "/TestSave.json", json);
             PlayerPrefs.SetString("userdata", json);
             PlayerPrefs.Save();
         }
@@ -206,17 +212,13 @@ namespace Game.Services
             var dataContext = ServiceProvider.Get<DataContext>();
 
             var json = PlayerPrefs.GetString("userdata");
+            Debug.Log(json);
             var userdata = JsonUtility.FromJson<UserData>(json) ?? new UserData();
 
-            var adjUnlockStages = Enumerable.Repeat(false, dataContext.stageDatas.Count).ToArray();
-            if (userdata.unlockStages != null)
-                Array.Copy(userdata.unlockStages, adjUnlockStages, Mathf.Min(userdata.unlockStages.Length, adjUnlockStages.Length));
-            userdata.unlockStages = adjUnlockStages;
-
-            var adjUnlockInfModes = Enumerable.Repeat(false, dataContext.stageDatas.Count).ToArray();
-            if (userdata.unlockInfModes != null)
-                Array.Copy(userdata.unlockInfModes, adjUnlockInfModes, Mathf.Min(userdata.unlockInfModes.Length, adjUnlockInfModes.Length));
-            userdata.unlockInfModes = adjUnlockInfModes;
+            if (userdata.unlockStages.Count < dataContext.stageDatas.Count)
+                userdata.unlockStages.AddRange(Enumerable.Repeat(false, dataContext.stageDatas.Count - userdata.unlockStages.Count));
+            if (userdata.unlockInfModes.Count < dataContext.stageDatas.Count)
+                userdata.unlockInfModes.AddRange(Enumerable.Repeat(false, dataContext.stageDatas.Count - userdata.unlockInfModes.Count));
 
             userdata.money = 10000;
 
@@ -231,7 +233,7 @@ namespace Game.Services
             {
                 stage = stage,
                 isInfinity = isInfinity,
-                deck = dataContext.userData.deck.ToArray(),
+                deck = dataContext.userData.deck,
                 money = dataContext.stageDatas[stage].startMoney,
                 life = dataContext.stageDatas[stage].startLife
             };
@@ -241,6 +243,7 @@ namespace Game.Services
     [Serializable]
     public class SaveData
     {
+        public bool isNewGame = true;
         public int stage;
         public bool isInfinity;
         public int wave = 1;
@@ -248,10 +251,40 @@ namespace Game.Services
         public int killAmount;
         public float money = 10000;
         public float playTime;
-        public string[] deck;
-        public string[] arguments;
-        public string[] playerunits;
-        public string[] obstacles;
+        public string arguments;
+        public string slimes;
+        public string obstacles;
+        public List<string> deck = new();
+
+        public SaveData Clone()
+        {
+            var instance = new SaveData()
+            {
+                isNewGame = isNewGame,
+                stage = stage,
+                isInfinity = isInfinity,
+                wave = wave,
+                life = life,
+                killAmount = killAmount,
+                money = money,
+                playTime = playTime,
+                arguments = arguments,
+                slimes = slimes,
+                obstacles = obstacles,
+                deck = deck,
+            };
+            return instance;
+        }
+    }
+
+    [Serializable]
+    public class SettingData
+    {
+        public float masterSound = 0.5f;
+        public float bgSound = 0.5f;
+        public float effectSound = 0.5f;
+        public int resolution;
+        public int hz;
     }
     #endregion
 }
