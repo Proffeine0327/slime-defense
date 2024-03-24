@@ -8,8 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_Slime_TransparentCartoon_Orange
-  m_Shader: {fileID: -6465566751694194690, guid: 09c9937b9b61a734db154bb744cf37d0,
-    type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 09c9937b9b61a734db154bb744cf37d0, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
