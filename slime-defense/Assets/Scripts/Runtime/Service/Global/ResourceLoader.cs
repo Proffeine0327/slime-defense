@@ -18,6 +18,7 @@ namespace Game.Services
         [NonSerialized] public Dictionary<string, Sprite> enemyIcons = new();
         [NonSerialized] public Dictionary<string, Sprite> skillIcons = new();
         [NonSerialized] public Dictionary<string, Sprite> argumentIcons = new();
+        [NonSerialized] public Dictionary<string, AudioClip> sounds = new();
 
         private void Awake()
         {
@@ -47,6 +48,9 @@ namespace Game.Services
 
             foreach (var sprite in Resources.LoadAll<Sprite>("Sprites/Argument/Icon"))
                 argumentIcons.Add(sprite.name, sprite);
+            
+            foreach (var audio in Resources.LoadAll<AudioClip>("Sounds"))
+                sounds.Add(audio.name, audio);
         }
     }
 }

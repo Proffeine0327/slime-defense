@@ -207,7 +207,7 @@ namespace Game.GameScene
 
         private void OnDestroy()
         {
-            slimeManager.Slimes.Remove(this);
+            slimeManager?.Slimes.Remove(this);
         }
 
         public string Save()

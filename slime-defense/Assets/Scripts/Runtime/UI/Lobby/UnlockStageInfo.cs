@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Game.Services;
 using TMPro;
 using UnityEngine;
+using UniRx.Triggers;
 
 namespace Game.UI.LobbyScene
 {
@@ -13,6 +14,7 @@ namespace Game.UI.LobbyScene
         private LobbyManager lobbyManager => ServiceProvider.Get<LobbyManager>();
         private DataContext dataContext => ServiceProvider.Get<DataContext>();
 
+        [SerializeField] private GameObject group;
         [SerializeField] private AppeareEnemyIcon enemyIconPrefab;
         [SerializeField] private TextMeshProUGUI title;
         [SerializeField] private TextMeshProUGUI explain;
@@ -27,21 +29,17 @@ namespace Game.UI.LobbyScene
                 .Where(b => b == true)
                 .Subscribe(b =>
                 {
-                    if (!dataContext.userData.unlockStages[lobbyManager.Stage.Value - 1])
-                    {
-                        gameObject.SetActive(false);
-                        return;
-                    }
-
-                    gameObject.SetActive(true);
                     title.text = StageData.name;
                     explain.text = StageData.explain;
                     foreach(Transform t in appeareEnemyIconGroup)
                         Destroy(t.gameObject);
                     foreach(var key in StageData.AllAppeareEnemies)
                         Instantiate(enemyIconPrefab, appeareEnemyIconGroup).Set(key);
-                    infinityLock.SetActive(!dataContext.userData.unlockInfModes[lobbyManager.Stage.Value]);
+                    infinityLock.SetActive(!dataContext.userData.unlockInfModes[lobbyManager.Stage.Value - 1]);
                 });
+
+            this.UpdateAsObservable()
+                .Subscribe(_ => group.SetActive(dataContext.userData.unlockStages[lobbyManager.Stage.Value - 1]));
         }
     }
 }

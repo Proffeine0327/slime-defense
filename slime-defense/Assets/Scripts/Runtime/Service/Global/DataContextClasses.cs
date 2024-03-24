@@ -121,6 +121,7 @@ namespace Game.Services
             newStageData.startLife = int.Parse(stageRows[3]);
             newStageData.startMoney = int.Parse(stageRows[4]);
             newStageData.gainMoney = int.Parse(stageRows[5]);
+            newStageData.clearMoney = int.Parse(stageRows[6]);
 
             var waveRows = split[4..];
             WaveData newWaveData = default;
@@ -153,6 +154,7 @@ namespace Game.Services
         public int startLife;
         public int startMoney;
         public int gainMoney;
+        public int clearMoney;
         public List<WaveData> waveDatas = new();
 
         public string[] AllAppeareEnemies
@@ -195,7 +197,6 @@ namespace Game.Services
         public List<string> deck = new() { "GrassSlime", "DevilSlime", "AngleSlime", "IceSlime", "LavaSlime", "MetalSlime", };
         public List<bool> unlockStages = new() { true };
         public List<bool> unlockInfModes = new();
-        // public SaveData saveData;
         public SaveData saveData;
         public SettingData settingData = new();
 
@@ -212,15 +213,12 @@ namespace Game.Services
             var dataContext = ServiceProvider.Get<DataContext>();
 
             var json = PlayerPrefs.GetString("userdata");
-            Debug.Log(json);
             var userdata = JsonUtility.FromJson<UserData>(json) ?? new UserData();
 
             if (userdata.unlockStages.Count < dataContext.stageDatas.Count)
                 userdata.unlockStages.AddRange(Enumerable.Repeat(false, dataContext.stageDatas.Count - userdata.unlockStages.Count));
             if (userdata.unlockInfModes.Count < dataContext.stageDatas.Count)
                 userdata.unlockInfModes.AddRange(Enumerable.Repeat(false, dataContext.stageDatas.Count - userdata.unlockInfModes.Count));
-
-            userdata.money = 10000;
 
             return userdata;
         }

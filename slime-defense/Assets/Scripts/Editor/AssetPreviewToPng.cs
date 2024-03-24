@@ -18,16 +18,22 @@ public class AssetPreviewToPng : EditorWindow
         camera.targetTexture = rt;
 
         var selects = Selection.gameObjects;
-        for (int i = 0; i < selects.Length; i++)
+
+        foreach(var s in selects) s.SetActive(false);
+
+        GameObject prev = null;
+        foreach(var s in selects)
         {
-            if(i - 1 >= 0) selects[i - 1].SetActive(false);
-            selects[i].SetActive(true);
+            prev?.SetActive(false);
+            s.SetActive(true);
+
             var screenShoot = new Texture2D(size.x, size.y, TextureFormat.RGB24, false);
             camera.Render();
             RenderTexture.active = rt;
             screenShoot.ReadPixels(new Rect(0, 0, size.x, size.y), 0, 0);
             screenShoot.Apply();
-            SaveTextureToPNGFile(screenShoot, directory, selects[i].name);
+            SaveTextureToPNGFile(screenShoot, directory, s.name);
+            prev = s;
         }
 
         camera.targetTexture = null;

@@ -8,6 +8,7 @@ namespace Game.Services
     {
         //services
         private DataContext dataContext => ServiceProvider.Get<DataContext>();
+        private SoundManager soundManager => ServiceProvider.Get<SoundManager>();
 
         //const
         private float INTERVAL_TIME = 0.5f;
@@ -23,6 +24,11 @@ namespace Game.Services
 
             Stage = new(this) { Interval = INTERVAL_TIME, Value = 1 };
             IsSelectedStage = new(this) { Interval = INTERVAL_TIME, Value = true };
+        }
+
+        private void Start()
+        {
+            // soundManager.Play("Airship", looping: true);
         }
     }
 }

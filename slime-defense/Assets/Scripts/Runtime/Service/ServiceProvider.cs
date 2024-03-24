@@ -8,7 +8,7 @@ public class ServiceProvider : MonoBehaviour
 {
     private static ServiceProvider _instance;
 
-    public static void Register<T>(T instance, bool isGlobal = false) where T : MonoBehaviour
+    public static bool Register<T>(T instance, bool isGlobal = false) where T : MonoBehaviour
     {
         if (_instance == null)
         {
@@ -30,21 +30,27 @@ public class ServiceProvider : MonoBehaviour
             {
                 _instance.globalContext.Add(typeof(T).FullName, instance);
                 DontDestroyOnLoad(instance.gameObject);
+                return true;
             }
             else
             {
                 Debug.LogWarning($"{typeof(T).FullName} type already exist in global context.");
                 Destroy(instance.gameObject);
+                return false;
             }
         }
         else
         {
             if (!_instance.sceneContext.ContainsKey(typeof(T).FullName))
+            {
                 _instance.sceneContext.Add(typeof(T).FullName, instance);
+                return true;
+            }
             else
             {
                 Debug.LogWarning($"{typeof(T).FullName} type already exist in scene context.");
                 Destroy(instance.gameObject);
+                return false;
             }
         }
     }
@@ -56,7 +62,12 @@ public class ServiceProvider : MonoBehaviour
             T inst = _instance.sceneContext[typeof(T).FullName] as T;
             return inst;
         }
-        return _instance.globalContext[typeof(T).FullName] as T;
+        if(_instance.globalContext.ContainsKey(typeof(T).FullName))
+        {
+            T inst = _instance.globalContext[typeof(T).FullName] as T;
+            return inst;
+        }
+        return null;
     }
 
     private readonly Dictionary<string, MonoBehaviour> globalContext = new();

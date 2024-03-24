@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4183684883444527128}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DEF_BOTTOM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 659463681164191549}
   - component: {fileID: 4200282539789340361}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Eye_Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -129,7 +129,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 937087855292452782}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SlimeArmature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -161,7 +161,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6582941946497355112}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ROOT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -195,7 +195,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3433145141407291992}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FACE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -226,7 +226,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1066961514837166889}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DEF_TOP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -259,7 +259,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8550629421944964848}
   - component: {fileID: 3566986435536401967}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SlimeBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -347,7 +347,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1229912485418088849}
-  m_Layer: 0
+  - component: {fileID: 7984666598221924738}
+  - component: {fileID: -5844798578646560382}
+  - component: {fileID: 3089254860508476073}
+  m_Layer: 8
   m_Name: GreenSlime
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -364,8 +367,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 659463681164191549}
   - {fileID: 5188713235410391549}
@@ -373,6 +376,60 @@ Transform:
   - {fileID: 8550629421944964848}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7984666598221924738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8587967992269832200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 842116ac5b90fa24da230c53cf0d04f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!135 &-5844798578646560382
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8587967992269832200}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!95 &3089254860508476073
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8587967992269832200}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 694df675042c5704e86ad9884e479f5c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8855871094848267897
 GameObject:
   m_ObjectHideFlags: 0
@@ -383,7 +440,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5188713235410391549}
   - component: {fileID: 2220806836199800512}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Mouth_Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -525,6 +582,10 @@ PrefabInstance:
     - target: {fileID: 7861371688408044556, guid: 3e6bf70ee875fba4d99acdd7fea73422, type: 3}
       propertyPath: m_Name
       value: Leaf
+      objectReference: {fileID: 0}
+    - target: {fileID: 7861371688408044556, guid: 3e6bf70ee875fba4d99acdd7fea73422, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

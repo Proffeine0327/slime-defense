@@ -31,6 +31,8 @@ namespace Game.Services
 
         [SerializeField] private Image blinder;
 
+        public event Action<string, string> OnSceneChanged;
+
         private void Awake()
         {
             ServiceProvider.Register(this, true);
@@ -49,14 +51,16 @@ namespace Game.Services
             blinder.DOColor(Color.black, 0.75f).SetUpdate(true);
             await UniTask.Delay(TimeSpan.FromSeconds(1.5f), DelayType.UnscaledDeltaTime);
 
+            var prev = SceneManager.GetActiveScene().name;
             if (setting.unloadScene != null)
-                await setting.unloadScene.Invoke(SceneManager.GetActiveScene().name);
+                await setting.unloadScene.Invoke(prev);
             
             if (setting.loadScene != null)
                 await setting.loadScene.Invoke();
             Time.timeScale = 1;
-
             await UniTask.DelayFrame(1);
+            OnSceneChanged?.Invoke(prev, SceneManager.GetActiveScene().name);
+
             blinder.DOColor(default, 0.75f).SetUpdate(true);
             await UniTask.Delay(TimeSpan.FromSeconds(0.75f), DelayType.UnscaledDeltaTime);
             blinder.gameObject.SetActive(false);
