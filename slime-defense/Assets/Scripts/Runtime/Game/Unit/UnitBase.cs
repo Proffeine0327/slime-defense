@@ -30,8 +30,8 @@ namespace Game.GameScene
                 if (key == Stats.Key.Hp && diff < 0) return;
                 if (key == Stats.Key.AttackDelay) return;
 
-                curStats.ModifyStat(key, x => x + diff);
-                curStats.ModifyStat(key, x => Mathf.Clamp(x, float.MinValue, maxStats.GetStat(key)));
+                curStats.SetStat(key, x => x + diff);
+                curStats.SetStat(key, x => Mathf.Clamp(x, float.MinValue, maxStats.GetStat(key)));
             };
 
             modifier.OnValueChange += key => modifier.Calculate(key, maxStats, BaseStat);

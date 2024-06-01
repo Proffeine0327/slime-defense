@@ -4,7 +4,7 @@ namespace Game.GameScene
 {
     public class Test2 : ArgumentBase
     {
-        public override string Title => "테스트2";
-        public override string Explain => "테스트2 입니다.";
+        public override string Title => "�׽�Ʈ2";
+        public override string Explain => "�׽�Ʈ 2�Դϴ�.";
     }
 }

@@ -32,10 +32,10 @@ namespace Game.Services
             {
                 count = sCount;
                 var stat = new Stats();
-                stat.AddStat(Stats.Key.AttackRange, float.Parse(split[count++]));
-                stat.AddStat(Stats.Key.AttackDamage, Mathf.Lerp(float.Parse(split[count++]), float.Parse(split[count++]), i / (float)maxLv));
-                stat.AddStat(Stats.Key.AbilityPower, Mathf.Lerp(float.Parse(split[count++]), float.Parse(split[count++]), i / (float)maxLv));
-                stat.AddStat(Stats.Key.AttackDelay, Mathf.Lerp(float.Parse(split[count++]), float.Parse(split[count++]), i / (float)maxLv));
+                stat.SetStat(Stats.Key.AttackRange, x => float.Parse(split[count++]));
+                stat.SetStat(Stats.Key.AttackDamage, x => Mathf.Lerp(float.Parse(split[count++]), float.Parse(split[count++]), i / (float)maxLv));
+                stat.SetStat(Stats.Key.AbilityPower, x => Mathf.Lerp(float.Parse(split[count++]), float.Parse(split[count++]), i / (float)maxLv));
+                stat.SetStat(Stats.Key.AttackDelay, x => Mathf.Lerp(float.Parse(split[count++]), float.Parse(split[count++]), i / (float)maxLv));
                 stats.Add(stat);
                 Debug.Log(stat.ToString());
             }
@@ -76,15 +76,15 @@ namespace Game.Services
             data.explain = split[count++];
             data.skillKey = split[count++];
             data.gainMoney = int.Parse(split[count++]);
-            data.@base.AddStat(Stats.Key.Hp, float.Parse(split[count++]));
-            data.@base.AddStat(Stats.Key.Speed, float.Parse(split[count++]));
-            data.@base.AddStat(Stats.Key.AbilityPower, float.Parse(split[count++]));
-            data.percentage.AddStat(Stats.Key.Hp, float.Parse(split[count++]));
-            data.add.AddStat(Stats.Key.Hp, float.Parse(split[count++]));
-            data.percentage.AddStat(Stats.Key.Speed, float.Parse(split[count++]));
-            data.add.AddStat(Stats.Key.Speed, float.Parse(split[count++]));
-            data.percentage.AddStat(Stats.Key.AbilityPower, float.Parse(split[count++]));
-            data.add.AddStat(Stats.Key.AbilityPower, float.Parse(split[count++]));
+            data.@base.SetStat(Stats.Key.Hp, x => float.Parse(split[count++]));
+            data.@base.SetStat(Stats.Key.Speed, x => float.Parse(split[count++]));
+            data.@base.SetStat(Stats.Key.AbilityPower, x => float.Parse(split[count++]));
+            data.percentage.SetStat(Stats.Key.Hp, x => float.Parse(split[count++]));
+            data.add.SetStat(Stats.Key.Hp, x => float.Parse(split[count++]));
+            data.percentage.SetStat(Stats.Key.Speed, x => float.Parse(split[count++]));
+            data.add.SetStat(Stats.Key.Speed, x => float.Parse(split[count++]));
+            data.percentage.SetStat(Stats.Key.AbilityPower, x => float.Parse(split[count++]));
+            data.add.SetStat(Stats.Key.AbilityPower, x => float.Parse(split[count++]));
             return data;
         }
     }

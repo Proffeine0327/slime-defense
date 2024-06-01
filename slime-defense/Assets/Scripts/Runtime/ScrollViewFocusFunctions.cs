@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 namespace Game
 {
+	//link : https://gist.github.com/yasirkula/75ca350fb83ddcc1558d33a8ecf1483f
 	public static class ScrollViewFocusFunctions
 	{
 		public static Vector2 CalculateFocusedScrollPosition(this ScrollRect scrollView, Vector2 focusPoint)

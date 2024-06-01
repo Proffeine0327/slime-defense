@@ -8,8 +8,8 @@ namespace Game.GameScene
         //service
         private SlimeManager slimeManager => ServiceProvider.Get<SlimeManager>();
 
-        public override string Title => "ìš°ë¦¬ëŠ” í•˜ë‚˜";
-        public override string Explain => "ë°°ì¹˜ëœ ìŠ¬ë¼ì„ í•˜ë‚˜ë‹¹ ì£¼ë¬¸ë ¥ì´ 1% ì¦ê°€í•©ë‹ˆë‹¤.";
+        public override string Title => "¿ì¸®´Â ÇÏ³ª";
+        public override string Explain => "¹èÄ¡µÈ ½½¶óÀÓ ÇÏ³ª´ç ÁÖ¹®·ÂÀÌ 1% Áõ°¡ÇÕ´Ï´Ù.";
 
         public override void OnAdd()
         {

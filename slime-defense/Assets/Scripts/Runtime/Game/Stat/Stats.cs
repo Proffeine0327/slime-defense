@@ -9,6 +9,7 @@ namespace Game.GameScene
 {
     public partial class Stats : ISaveLoad
     {
+        //define
         public enum Key
         {
             Hp,
@@ -22,63 +23,50 @@ namespace Game.GameScene
             Invincible,
             Stealth,
             AbsSight,
+
+            End
         }
 
-        private ReactiveDictionary<Key, float> stats = new();
+        //field
+        private ReactiveCollection<float> stats;
 
+        //event
+        /// <summary>
+        /// key, old, new
+        /// </summary>
         public event Action<Key, float, float> OnStatChanged;
 
+        //method
         public Stats()
         {
-            stats
-                .ObserveAdd()
-                .Subscribe(kvp => OnStatChanged?.Invoke(kvp.Key, 0, kvp.Value));
-            stats
-                .ObserveRemove()
-                .Subscribe(kvp => OnStatChanged?.Invoke(kvp.Key, kvp.Value, 0));
+            stats = new();
+            for (int i = 0; i < (int)Key.End; i++)
+                stats.Add(0);
+
             stats
                 .ObserveReplace()
-                .Where(kv => kv.OldValue != kv.NewValue)
-                .Subscribe(kvp => OnStatChanged?.Invoke(kvp.Key, kvp.OldValue, kvp.NewValue));
+                .Subscribe(e => OnStatChanged?.Invoke((Key)e.Index, e.OldValue, e.NewValue));
         }
 
         public float this[Key key]
         {
             get => GetStat(key);
-            set => ModifyStat(key, x => value);
+            set => SetStat(key, x => value);
         }
 
         public float GetStat(Key key)
         {
-            if (!stats.ContainsKey(key)) return 0;
-            return stats[key];
+            return stats[(int)key];
         }
 
-        public IReadOnlyDictionary<Key, float> GetStats()
+        public IReadOnlyList<float> GetStats()
         {
-            return new Dictionary<Key, float>(stats);
+            return stats;
         }
 
-        public void ModifyStat(Key key, Func<float, float> modifier)
+        public void SetStat(Key key, Func<float, float> modifier)
         {
-            if (!stats.ContainsKey(key)) stats.Add(key, 0);
-            stats[key] = modifier(stats[key]);
-        }
-
-        public bool RemoveStat(Key key)
-        {
-            return stats.Remove(key);
-        }
-
-        public bool AddStat(Key key, float value)
-        {
-            return stats.TryAdd(key, value);
-        }
-
-        public void ClearStat()
-        {
-            foreach (var s in stats)
-                stats.Remove(s.Key);
+            stats[(int)key] = modifier(stats[(int)key]);
         }
 
         public Stats Clone()
@@ -88,10 +76,11 @@ namespace Game.GameScene
             return stats;
         }
 
-        public void ChangeFrom(Stats stats)
+        public void ChangeFrom(Stats target)
         {
-            foreach (var stat in stats.GetStats())
-                ModifyStat(stat.Key, x => stat.Value);
+            var stats = target.GetStats();
+            for (int i = 0; i < stats.Count; i++)
+                SetStat((Key)i, x => stats[i]);
         }
 
         public override string ToString()
@@ -105,8 +94,8 @@ namespace Game.GameScene
         public string Save()
         {
             var sb = new StringBuilder();
-            foreach(var stat in GetStats())
-                sb.Append($"{stat.Key}\'{stat.Value}").Append(',');
+            for(int i = 0; i < (int)Key.End; i++)
+                sb.Append($"{(Key)i}\'{GetStat((Key)i)}").Append(',');
             return sb.ToString();
         }
 
@@ -120,7 +109,8 @@ namespace Game.GameScene
                 var kvp = s.Split('\'');
                 var key = Enum.Parse<Key>(kvp[0]);
                 var value = float.Parse(kvp[1]);
-                AddStat(key, value);
+
+                SetStat(key, x => value);
             }
         }
     }

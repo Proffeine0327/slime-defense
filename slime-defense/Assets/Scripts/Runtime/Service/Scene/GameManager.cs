@@ -35,6 +35,7 @@ namespace Game.Services
         public bool IsGameClear => isGameClear;
         public bool IsGameOver => isGameOver;
         public int MaxWave => dataContext.stageDatas[saveData.stage].waveDatas.Count;
+        public HashSet<Enemy> Enemies => enemies;
 
         public event Action OnWaveStart;
         public event Action OnWaveEnd;

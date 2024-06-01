@@ -26,15 +26,21 @@ namespace Game.GameScene
 
             return Activator.CreateInstance(t, args: caster) as SkillBase;
         }
+
         public virtual void OnAdd() { }
+
         public virtual void OnAttack(UnitBase enemy)
         {
-            enemy.curStats.ModifyStat(Stats.Key.Hp, x => x - caster.curStats.GetStat(Stats.Key.AttackDamage));
+            enemy.curStats.SetStat(Stats.Key.Hp, x => x - caster.curStats.GetStat(Stats.Key.AttackDamage));
         }
+
+        public virtual void OnWaveStart() { }
+
         public virtual void OnWaveEnd() { }
+
         public virtual void OnDamage(float damage)
         {
-            caster.curStats.ModifyStat(Stats.Key.Hp, x => x - damage);
+            caster.curStats.SetStat(Stats.Key.Hp, x => x - damage);
         }
 
         public SkillBase(UnitBase caster)

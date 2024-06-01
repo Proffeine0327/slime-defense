@@ -22,7 +22,7 @@ namespace Game.GameScene
         public int Lv => 1;
         public bool IsRemovable => gameManager.SaveData.money >= cost && !endurance.removing;
         public float RemoveCost => -cost;
-        public string RemoveExplain => $"ì œê±°: {RemoveCost}<sprite=\"coin-slime\" name=\"coin-slime\">";
+        public string RemoveExplain => $"ÆÄ±«: {RemoveCost}<sprite=\"coin-slime\" name=\"coin-slime\">";
         public Sprite Icon => null;
         public Stats DisplayStat => maxStats;
         public SkillBase Skill => skill;

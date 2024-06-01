@@ -19,6 +19,7 @@ public class DebugUI : MonoBehaviour
 
     private void Update()
     {
+        //match count of dispays and slimes
         while(texts.Count != slimeManager.Slimes.Count)
         {
             if(texts.Count > slimeManager.Slimes.Count)

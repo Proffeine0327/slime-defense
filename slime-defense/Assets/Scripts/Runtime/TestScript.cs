@@ -12,7 +12,6 @@ public class TestScript : MonoBehaviour
 {
     //service
     private GameManager gameManager => ServiceProvider.Get<GameManager>();
-    private SettingWindow settingManager => ServiceProvider.Get<SettingWindow>();
 
     private void Start()
     {

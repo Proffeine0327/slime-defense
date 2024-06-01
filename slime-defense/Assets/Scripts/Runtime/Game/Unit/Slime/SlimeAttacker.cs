@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Game.Services;
 using UnityEngine;
 
 namespace Game.GameScene
@@ -8,6 +9,9 @@ namespace Game.GameScene
     {
         public class Attacker
         {
+            //service
+            private GameManager gameManager => ServiceProvider.Get<GameManager>();
+
             private Slime slime;
             private Enemy target;
 
@@ -18,14 +22,12 @@ namespace Game.GameScene
                 this.slime = slime;
             }
 
-            private Collider[] GetEnemiesInRange()
+            private Enemy[] GetEnemiesInRange()
             {
-                return Physics
-                    .OverlapCapsule(
-                        slime.transform.position + (Vector3.up * 100),
-                        slime.transform.position + (Vector3.down * 100),
-                        slime.maxStats.GetStat(Stats.Key.AttackRange),
-                        LayerMask.GetMask("Enemy"));
+                return gameManager
+                    .Enemies
+                    .Where(e => Vector3.Distance(slime.transform.position, e.transform.position) <= slime.curStats.GetStat(Stats.Key.AttackRange) + 0.25f)
+                    .ToArray();
             }
 
             public bool HasTarget()
@@ -45,15 +47,15 @@ namespace Game.GameScene
 
             public bool TryFindNewEnemy()
             {
-                var colliders = GetEnemiesInRange();
-                if (colliders.Length == 0) return false;
-                var enemies = colliders
-                    .Select(e => e.GetComponent<Enemy>())
-                    .Where(e => !e.IsDisabled)
+                var enemies = GetEnemiesInRange();
+                if (enemies.Length == 0) return false;
+
+                //get cloest enemy
+                var orderedEnemies = enemies
                     .OrderByDescending(e => e.Distance)
                     .ToArray();
-                if (enemies.Length == 0) return false;
-                target = enemies.First();
+                if (orderedEnemies.Length == 0) return false;
+                target = orderedEnemies.First();
                 return true;
             }
         }

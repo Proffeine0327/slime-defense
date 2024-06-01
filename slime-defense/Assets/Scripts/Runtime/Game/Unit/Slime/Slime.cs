@@ -44,7 +44,7 @@ namespace Game.GameScene
         public bool IsMaxLv => dataContext.gameData.maxLv == lv.Value;
         public bool IsRemovable => true;
         public float RemoveCost => SlimeData.cost * dataContext.gameData.sellReceiveRatio * Mathf.Pow(2, lv.Value - 1);
-        public string RemoveExplain => $"ÌåêÎß§: {RemoveCost}<sprite=\"coin-slime\" name=\"coin-slime\">";
+        public string RemoveExplain => $"∆«∏≈: {RemoveCost}<sprite=\"coin-slime\" name=\"coin-slime\">";
         public SkillBase Skill => skill;
         public Vector2Int XY => xy;
 
@@ -58,11 +58,14 @@ namespace Game.GameScene
 
             rangeDisplayer = GetComponentInChildren<RangeDisplayer>(true);
 
+            //update range displayer when attack range is changed
             curStats.OnStatChanged += (key, pre, cur) =>
             {
                 if (key != Stats.Key.AttackRange) return;
                 rangeDisplayer.SetRange(curStats.GetStat(key));
             };
+
+            //update max stats when lv is changed
             lv.Subscribe(x =>
             {
                 if (x <= 0) return;
@@ -85,7 +88,7 @@ namespace Game.GameScene
 
             if (curStats.GetStat(Stats.Key.AttackDelay) < maxStats.GetStat(Stats.Key.AttackDelay))
             {
-                curStats.ModifyStat(Stats.Key.AttackDelay, x => x + Time.deltaTime);
+                curStats.SetStat(Stats.Key.AttackDelay, x => x + Time.deltaTime);
             }
             else
             {
@@ -93,7 +96,7 @@ namespace Game.GameScene
                 {
                     isLook = true;
                     animator.PlayAttack(SlimeData.atkAnimKey);
-                    curStats.ModifyStat(Stats.Key.AttackDelay, x => 0);
+                    curStats.SetStat(Stats.Key.AttackDelay, x => 0);
                 }
             }
         }
@@ -107,6 +110,8 @@ namespace Game.GameScene
         public void Attack()
         {
             isLook = false;
+
+            //if bullet key is null do melee attack, else spawn bullet 
             if (!string.IsNullOrEmpty(SlimeData.bulletKey))
             {
                 var bullet = objectPool.GetObject(SlimeData.bulletKey);
@@ -187,11 +192,13 @@ namespace Game.GameScene
             {
                 var movedIndex = grids.ToIndex(transform.position);
 
+                //if moving slime is success move to target index, else cancle
                 if (slimeManager.MoveSlime(xy, movedIndex)) MoveTo(movedIndex);
                 else MoveTo(xy);
             }
             else
             {
+                //cancel
                 MoveTo(xy);
             }
 

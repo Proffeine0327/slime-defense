@@ -9,7 +9,6 @@ namespace Game.Services
     public class SelectManager : MonoBehaviour, IPointerClickHandler
     {
         //services
-        private DataContext dataContext => ServiceProvider.Get<DataContext>();
         private Grids grids => ServiceProvider.Get<Grids>();
         private GameManager gameManager => ServiceProvider.Get<GameManager>();
 

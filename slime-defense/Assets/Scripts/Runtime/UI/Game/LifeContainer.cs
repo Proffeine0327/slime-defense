@@ -25,7 +25,6 @@ namespace Game.UI.GameScene
                 .Subscribe(l =>
                 {
                     int i = 1;
-                    Debug.Log(l);
                     while (l - 1 >= lifes.Count)
                     {
                         Debug.Log(lifes.Count);

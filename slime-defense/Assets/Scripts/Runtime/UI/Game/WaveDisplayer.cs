@@ -11,7 +11,6 @@ namespace Game.UI.GameScene
     {
         //service
         private GameManager gameManager => ServiceProvider.Get<GameManager>();
-        private DataContext dataContext => ServiceProvider.Get<DataContext>();
 
         private TextMeshProUGUI text;
 

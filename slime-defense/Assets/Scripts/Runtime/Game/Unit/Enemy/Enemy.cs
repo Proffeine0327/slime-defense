@@ -28,20 +28,23 @@ namespace Game.GameScene
 
             animator = new(this);
 
-            curStats.OnStatChanged += (key, pre, cur) =>
-            {
-                if (key != Stats.Key.Hp) return;
-                Debug.Log($"Damaged {pre - cur}");
-            };
+            // curStats.OnStatChanged += (key, pre, cur) =>     //for debug
+            // {
+            //     if (key != Stats.Key.Hp) return;
+            //     Debug.Log($"Damaged {pre - cur}");
+            // };
             IsDisabled = true;
         }
 
         public void Appeare(int lv)
         {
-            Debug.Log($"lv: {lv}");
+            //calculate stats
             maxStats.ChangeFrom(BaseStat);
+            //set effect
             effects.AddOrChange("EnemyUpgrade", new EnemyUpgradeEffect() { key = key, lv = lv });
+            //initialize current stat
             curStats.ChangeFrom(maxStats);
+            //start movement
             StartCoroutine(MovePath(0));
         }
 
@@ -52,6 +55,7 @@ namespace Game.GameScene
 
         private void Update()
         {
+            //when die
             if (!IsDisabled && curStats.GetStat(Stats.Key.Hp) <= 0)
             {
                 IsDisabled = true;
@@ -77,15 +81,18 @@ namespace Game.GameScene
             yield return new WaitForSeconds(0.5f);
 
             IsDisabled = false;
+            Distance = 0;
             var targetIndex = 1;
             while (path.MaxPointCount > targetIndex)
             {
                 if (IsDisabled) yield break;
 
+                //calculate rotation
                 var diff = transform.position - path.GetPathPoint(targetIndex);
                 var rotate = Mathf.Atan2(diff.x, diff.z) * Mathf.Rad2Deg;
                 transform.rotation = Quaternion.Euler(0, rotate - 180, 0);
 
+                //move forward
                 transform.position = Vector3.MoveTowards
                     (
                         transform.position,
@@ -93,6 +100,7 @@ namespace Game.GameScene
                         curStats.GetStat(Stats.Key.Speed) * Time.deltaTime
                     );
 
+                //add distance
                 Distance += Time.deltaTime * curStats.GetStat(Stats.Key.Speed);
                 if (Vector3.Distance(transform.position, path.GetPathPoint(targetIndex)) < 0.01f)
                     transform.position = path.GetPathPoint(targetIndex++);

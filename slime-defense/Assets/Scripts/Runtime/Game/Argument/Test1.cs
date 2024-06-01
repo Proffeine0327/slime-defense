@@ -8,8 +8,8 @@ namespace Game.GameScene
         //service
         private GameManager gameManager => ServiceProvider.Get<GameManager>();
 
-        public override string Title => "ëª©ìˆ¨ íšŒë³µ";
-        public override string Explain => "ì¦‰ì‹œ 3ì˜ ë¼ì´í”„ë¥¼ ì–»ìŠµë‹ˆë‹¤";
+        public override string Title => "¸ñ¼û È¸º¹";
+        public override string Explain => "Áï½Ã 3ÀÇ Ã¼·ÂÀ» È¸º¹ÇÕ´Ï´Ù.";
 
         public override void OnAdd()
         {

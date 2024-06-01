@@ -29,7 +29,7 @@ namespace Game.UI.LobbyScene
                 .Subscribe(b =>
                 {
                     gameObject.SetActive(true);
-                    explain.text = $"í•´ê¸ˆ: {StageData.unlockMoney}<sprite=\"coin\" name=\"coin\">";
+                    explain.text = $"ÇØ±Ý: {StageData.unlockMoney}<sprite=\"coin\" name=\"coin\">";
                 });
 
             this.UpdateAsObservable()
@@ -39,8 +39,8 @@ namespace Game.UI.LobbyScene
             {
                 var option = new AnnounceWindow.Option()
                 {
-                    title = "êµ¬ë§¤ ì•Œë¦¼",
-                    explain = $"ìŠ¤í…Œì´ì§€{lobbyManager.Stage.Value}ë¥¼ êµ¬ë§¤í•˜ì‹œê² ìŠµë‹ˆê¹Œ?\nê³¨ë“œ {dataContext.userData.money} => {dataContext.userData.money - StageData.unlockMoney}",
+                    title = "êµ¬ë§¤ ?•Œë¦?",
+                    explain = $"½ºÅ×ÀÌÁö{lobbyManager.Stage.Value}¸¦ ±¸¸ÅÇÏ½Ã°Ú½À´Ï±î?\n°ñµå {dataContext.userData.money} ¡æ {dataContext.userData.money - StageData.unlockMoney}",
                     onSubmit = () =>
                     {
                         dataContext.userData.unlockStages[lobbyManager.Stage.Value - 1] = true;

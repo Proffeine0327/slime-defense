@@ -36,8 +36,8 @@ namespace Game.UI.LobbyScene
                     else
                     {
                         var option = new AnnounceWindow.Option();
-                        option.title = "ê²½ê³ ";
-                        option.explain = "í˜„ìž¬ ì €ìž¥ëœ ê²Œìž„ì´ ìžˆìŠµë‹ˆë‹¤.\n ì •ë§ë¡œ ìƒˆ ê²Œìž„ì„ í”Œë ˆì´ í•˜ì‹œê² ìŠµë‹ˆê¹Œ?";
+                        option.title = "°æ°í";
+                        option.explain = "ÇöÀç ÀúÀåµÈ °ÔÀÓÀÌ ÀÖ½À´Ï´Ù.\n Á¤¸»·Î »õ °ÔÀÓÀ» ÇÃ·¹ÀÌ ÇÏ½Ã°Ú½À´Ï±î?";
                         option.onSubmit = () =>
                         {
                             dataContext.userData.CreateNewSaveData(lobbyManager.Stage.Value, false);
@@ -62,8 +62,8 @@ namespace Game.UI.LobbyScene
                     else
                     {
                         var option = new AnnounceWindow.Option();
-                        option.title = "ê²½ê³ ";
-                        option.explain = "í˜„ìž¬ ì €ìž¥ëœ ê²Œìž„ì´ ìžˆìŠµë‹ˆë‹¤.\n ì •ë§ë¡œ ìƒˆ ê²Œìž„ì„ í”Œë ˆì´ í•˜ì‹œê² ìŠµë‹ˆê¹Œ?";
+                        option.title = "°æ°í";
+                        option.explain = "ÇöÀç ÀúÀåµÈ °ÔÀÓÀÌ ÀÖ½À´Ï´Ù.\n Á¤¸»·Î »õ °ÔÀÓÀ» ÇÃ·¹ÀÌ ÇÏ½Ã°Ú½À´Ï±î?";
                         option.onSubmit = () =>
                         {
                             dataContext.userData.CreateNewSaveData(lobbyManager.Stage.Value, true);

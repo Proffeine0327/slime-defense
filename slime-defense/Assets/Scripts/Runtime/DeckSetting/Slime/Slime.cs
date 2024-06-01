@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 
 namespace Game.DeckSettingScene
 {
+    //slime used in deck setting scene
     public partial class Slime : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         //service
@@ -34,6 +35,7 @@ namespace Game.DeckSettingScene
             transform.position = pos;
         }
 
+        //random move routine
         private IEnumerator MoveRoutine()
         {
             while (true)
@@ -49,8 +51,8 @@ namespace Game.DeckSettingScene
                         continue;
                     }
 
-                    transform.LookAt(targetPosition);
-                    transform.position = transform.position + transform.forward * Time.deltaTime * Mathf.Abs(Mathf.Sin(Time.time * 3));
+                    transform.LookAt(targetPosition); //look forward
+                    transform.position = transform.position + transform.forward * Time.deltaTime * Mathf.Abs(Mathf.Sin(Time.time * 3)); //bounce move
                 }
 
                 yield return new WaitForSeconds(Random.Range(1f, 5f));
@@ -100,6 +102,7 @@ namespace Game.DeckSettingScene
 
             if (Physics.Raycast(inputManager.TouchRay, out var hit, Mathf.Infinity, ~LayerMask.GetMask("Slime")) && hit.collider.TryGetComponent<Slot>(out var comp))
             {
+                //if this was already in deck change each position, else set deck
                 if (!isInDeck)
                     deckSettingManager.SetDeck(comp.Index, key);
                 else
@@ -107,6 +110,7 @@ namespace Game.DeckSettingScene
             }
             else
             {
+                //if user try to drag slime out of deck, cancle
                 if (isInDeck)
                 {
                     transform.position = startDraggingPosition;
@@ -119,7 +123,7 @@ namespace Game.DeckSettingScene
                     transform.position = inputManager.TouchRay.GetPoint(enter);
                     targetPosition = transform.position;
                 }
-                else
+                else //if drag position is out of field, cancle
                     transform.position = startDraggingPosition;
             }
         }

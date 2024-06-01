@@ -40,6 +40,10 @@ namespace Game.GameScene
                 return this;
             }
 
+            /// <summary>
+            /// build slime basic way
+            /// </summary>
+            /// <returns>slime instance</returns>
             public Slime Build()
             {
                 var slime = Instantiate(resourceLoader.slimePrefabs[slimeKey]);
@@ -54,6 +58,11 @@ namespace Game.GameScene
                 return slime;
             }
 
+            /// <summary>
+            /// build disabled slime <br/> 
+            /// lv is fixed to 1
+            /// </summary>
+            /// <returns>slime instance</returns>
             public Slime BuildOnlyData()
             {
                 var slime = Instantiate(resourceLoader.slimePrefabs[slimeKey]);
@@ -67,6 +76,11 @@ namespace Game.GameScene
                 return slime;
             }
 
+            /// <summary>
+            /// build slime and load from saved string 
+            /// </summary>
+            /// <param name="json">load string</param>
+            /// <returns>slime instance</returns>
             public Slime BuildFromData(string json)
             {
                 var slime = Instantiate(resourceLoader.slimePrefabs[slimeKey]);
